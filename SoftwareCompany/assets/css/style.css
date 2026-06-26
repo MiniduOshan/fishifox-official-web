@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FishiFox Official Brand Palette & Base Resets
+   FishiFox Official Brand Palette & Base Resets (Permanent White Theme)
    ========================================================================== */
 :root {
     --primary: #e62e72;         
@@ -9,7 +9,7 @@
     
     --deep-blue: #f8fafc;       
     --ocean-blue: #f1f5f9;      
-    --page-bg: #ffffff;         
+    --page-bg: #ffffff;         /* Pure white background anchor */
     --text-primary: #0f172a;    
     --text-secondary: #475569;  
     --glass-bg: rgba(255, 255, 255, 0.65);
@@ -22,7 +22,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
 html, body {
@@ -34,7 +33,7 @@ html, body {
 }
 
 /* ==========================================================================
-   CRITICAL FIX: Full Screen Viewport For Canvas Frame Wrappers
+   Light-Theme Neon Canvas Stacking Architecture 
    ========================================================================== */
 #canvas-container {
     position: fixed;
@@ -42,33 +41,24 @@ html, body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1;                /* Renders behind content but over background */
-    pointer-events: none;       /* Allows standard cursor mouse clicks to drop through */
-    background-color: #ffffff;  /* Permanent crisp light theme canvas backdrop */
+    z-index: 0;                 /* Locked behind text layouts */
+    pointer-events: none;       /* Click events fall through to buttons natively */
 }
 
-#canvas-container canvas {
+#neon-canvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     display: block;
+    touch-action: none;
 }
 
 .snap-container {
     width: 100%;
     position: relative;
-    z-index: 2; /* Forces text layers cleanly over the fixed background canvas layer */
-    pointer-events: none; /* Allows canvas listeners to catch initial root pass coordinates */
-}
-
-.snap-container section, 
-.snap-container div, 
-.snap-container p, 
-.snap-container h1, 
-.snap-container a {
-    pointer-events: auto; /* Restores link click behaviors for active content layouts */
+    z-index: 2;                 /* Pushes your copy content safely above the WebGL frame layer */
 }
 
 section {
