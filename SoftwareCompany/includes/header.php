@@ -18,7 +18,7 @@
 <body>
 
     <div id="canvas-container">
-        <canvas id="neon-canvas"></canvas>
+        <canvas id="fluid-canvas"></canvas>
     </div>
 
     <div class="scroll-progress"></div>

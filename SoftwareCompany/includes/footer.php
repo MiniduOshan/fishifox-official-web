@@ -13,9 +13,10 @@
 
     <!-- Execution Module Pipelines -->
     <script src="assets/js/theme.js"></script>
-    <script src="assets/js/particles.js?v=2"></script>
+    <!-- <script src="assets/js/particles.js?v=2"></script> -->
     <script src="assets/js/scroll.js"></script>
     <script src="assets/js/parallax.js"></script>
     <script src="assets/js/script.js"></script>
+    <script src="assets/js/fluid.js"></script>
 </body>
 </html>
