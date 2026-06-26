@@ -1,105 +1,122 @@
 <?php include 'includes/header.php'; ?>
-<?php include 'includes/navbar.php'; ?>
 
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="hero-content reveal-up">
-        <h1 class="hero-title">Build <span class="text-gradient">Better</span> Software</h1>
-        <p class="hero-subtitle">We develop websites, mobile apps, cloud systems, AI solutions and more.</p>
-        
-        <div class="hero-buttons">
-            <a href="contact.php" class="btn-gradient btn-glow btn-large">Get Started</a>
-            <a href="portfolio.php" class="btn-glass btn-large">Portfolio</a>
-        </div>
+<!-- Hero Segment Module -->
+<section class="hero" id="hero">
+    <div class="hero-content">
+        <p class="hero-subtitle">Welcome to FishiFox</p>
+        <h1 class="hero-title">
+            <span class="line">Diving to an</span>
+            <span class="line">Unexpected Depth</span>
+        </h1>
+        <p class="hero-description">
+            At FishiFox, we’re not just another IT company. We’re your dedicated partner in achieving digital excellence. With a steadfast commitment to delivering top-tier web development, mobile app solutions, IT base research, and digital marketing services, we stand at the forefront of innovation in Sri Lanka’s IT industry.
+        </p>
+        <a href="services.php" class="hero-cta">Explore Services</a>
     </div>
-    <div class="hero-illustration reveal-up" style="transition-delay: 0.2s">
-        <!-- We will put an animated 3D-like illustration or abstract geometry here -->
-        <div class="floating-mockup">
-            <div class="glass-panel main-panel"></div>
-            <div class="glass-panel float-panel-1"></div>
-            <div class="glass-panel float-panel-2"></div>
+    <div class="scroll-indicator"><div class="scroll-line"></div></div>
+</section>
+
+<!-- Stats Grid Module -->
+<section class="stats-section" id="stats">
+    <div class="stats-container">
+        <div class="stat-card reveal">
+            <div class="stat-icon">👥</div>
+            <div class="stat-number" data-target="85">0</div>
+            <div class="stat-label">Active Clients</div>
+        </div>
+        <div class="stat-card reveal">
+            <div class="stat-icon">📊</div>
+            <div class="stat-number" data-target="450">0</div>
+            <div class="stat-label">Projects Done</div>
+        </div>
+        <div class="stat-card reveal">
+            <div class="stat-icon">🌟</div>
+            <div class="stat-number" data-target="27">0</div>
+            <div class="stat-label">Team Advisors</div>
+        </div>
+        <div class="stat-card reveal">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-number" data-target="15">0</div>
+            <div class="stat-label">Glorious Years</div>
         </div>
     </div>
 </section>
 
-<!-- Stats Section -->
-<section class="stats-section reveal-up">
-    <div class="stats-grid">
-        <div class="stat-card glass-card">
-            <h3 class="text-gradient">85+</h3>
-            <p>Active Clients</p>
+<!-- Tools Catalog Module -->
+<section class="tools-section" id="tools">
+    <div class="section-header reveal">
+        <p class="section-label">Our Tools</p>
+        <h2 class="section-title">Awesome Custom Products</h2>
+    </div>
+    <div class="tools-grid">
+        <div class="tool-card reveal">
+            <div class="tool-icon">📁</div>
+            <h3 class="tool-title">POS Sri Lanka</h3>
+            <p class="tool-desc">Sleek point-of-sale systems tailored for Sri Lankan retail, dining, and cafes, featuring offline caching and inventory sync.</p>
         </div>
-        <div class="stat-card glass-card">
-            <h3 class="text-gradient">450+</h3>
-            <p>Projects Done</p>
+        <div class="tool-card reveal">
+            <div class="tool-icon">🧪</div>
+            <h3 class="tool-title">Medi Lab</h3>
+            <p class="tool-desc">A specialized Laboratory Management System built to streamline laboratory diagnostics, patient records, and doctor portal audits.</p>
         </div>
-        <div class="stat-card glass-card">
-            <h3 class="text-gradient">27+</h3>
-            <p>Team Advisors</p>
-        </div>
-        <div class="stat-card glass-card">
-            <h3 class="text-gradient">15+</h3>
-            <p>Glorious Years</p>
+        <div class="tool-card reveal">
+            <div class="tool-icon">🎨</div>
+            <h3 class="tool-title">Web Design</h3>
+            <p class="tool-desc">We create high-converting, fully customized digital experiences with integrated shopping carts and inventory platforms.</p>
         </div>
     </div>
 </section>
 
-<!-- Services Section -->
-<section class="services-section">
-    <div class="section-header reveal-up">
-        <h2 class="section-title">We Specialize In</h2>
-        <p class="section-desc">Delivering top-notch digital solutions tailored to your business needs.</p>
+<!-- Accordion Hub Module -->
+<section class="faq-section" id="faq">
+    <div class="section-header reveal">
+        <p class="section-label">FAQ</p>
+        <h2 class="section-title">Frequently Asked Questions</h2>
     </div>
-    
-    <div class="services-grid">
-        <!-- Service 1 -->
-        <div class="service-card glass-card reveal-up">
-            <div class="service-icon">🌐</div>
-            <h3>Web Development</h3>
-            <p>We create beautiful, responsive, and feature-rich websites tailored to your specific needs.</p>
-            <a href="#" class="btn-gradient btn-small">More</a>
-        </div>
-        
-        <!-- Service 2 -->
-        <div class="service-card glass-card reveal-up" style="transition-delay: 0.1s">
-            <div class="service-icon">📱</div>
-            <h3>Mobile App Development</h3>
-            <p>Building high-performance iOS and Android applications that delight users.</p>
-            <a href="#" class="btn-gradient btn-small">More</a>
-        </div>
-        
-        <!-- Service 3 -->
-        <div class="service-card glass-card reveal-up" style="transition-delay: 0.2s">
-            <div class="service-icon">🔍</div>
-            <h3>IT Based Research</h3>
-            <p>Our dedicated team conducts deep analysis to solve the most complex business problems.</p>
-            <a href="#" class="btn-gradient btn-small">More</a>
-        </div>
-        
-        <!-- Service 4 -->
-        <div class="service-card glass-card reveal-up">
-            <div class="service-icon">📈</div>
-            <h3>Digital Marketing</h3>
-            <p>Data-driven strategies to reach your target audience effectively and maximize ROI.</p>
-            <a href="#" class="btn-gradient btn-small">More</a>
-        </div>
-        
-        <!-- Service 5 -->
-        <div class="service-card glass-card reveal-up" style="transition-delay: 0.1s">
-            <div class="service-icon">🛒</div>
-            <h3>E-commerce Solutions</h3>
-            <p>Robust online stores that deliver seamless shopping experiences to customers.</p>
-            <a href="#" class="btn-gradient btn-small">More</a>
-        </div>
-        
-        <!-- Service 6 -->
-        <div class="service-card glass-card reveal-up" style="transition-delay: 0.2s">
-            <div class="service-icon">🛡️</div>
-            <h3>IT Auditing Services</h3>
-            <p>Comprehensive security and infrastructure reviews to protect your valuable digital assets.</p>
-            <a href="#" class="btn-gradient btn-small">More</a>
+    <div class="faq-container reveal">
+        <div class="faq-item">
+            <div class="faq-header">
+                <span class="faq-question">What services does FishiFox offer?</span>
+                <div class="faq-icon-wrapper">▼</div>
+            </div>
+            <div class="faq-content">
+                <p>FishiFox specializes in full-scale web development, custom mobile applications (iOS and Android), IT base audits/research, and digital marketing strategies.</p>
+            </div>
         </div>
     </div>
 </section>
+
+<script>
+    // Localized typography sequencer scripts injection mapping hook block
+    document.addEventListener("DOMContentLoaded", () => {
+        gsap.to('.hero-subtitle', { opacity: 1, y: 0, duration: 0.7, delay: 0.12 });
+        document.querySelectorAll('.hero-title .line').forEach((line, index) => {
+            const text = line.textContent.trim(); line.innerHTML = '';
+            text.split('').forEach((char, i) => {
+                const span = document.createElement('span');
+                span.className = 'char'; span.textContent = char === ' ' ? '\u00A0' : char;
+                line.appendChild(span);
+                gsap.to(span, { opacity: 1, y: 0, duration: 0.7, delay: 0.18 + (index * 0.12) + (i * 0.01) });
+            });
+        });
+        gsap.to('.hero-description', { opacity: 1, y: 0, duration: 0.7, delay: 0.38 });
+        gsap.to('.hero-cta', { opacity: 1, y: 0, duration: 0.7, delay: 0.5 });
+        gsap.to('.scroll-indicator', { opacity: 1, duration: 0.7, delay: 0.62 });
+
+        // Numerical ticking engine metrics execution code
+        document.querySelectorAll('.stat-number').forEach(stat => {
+            const target = parseInt(stat.getAttribute('data-target'));
+            ScrollTrigger.create({
+                trigger: stat, start: 'top 85%',
+                onEnter: () => {
+                    gsap.to(stat, {
+                        innerHTML: target, duration: 2, snap: { innerHTML: 1 }, ease: 'power2.out',
+                        onUpdate: function() { stat.innerHTML = Math.round(this.targets()[0].innerHTML) + '+'; }
+                    });
+                }
+            });
+        });
+    });
+</script>
 
 <?php include 'includes/footer.php'; ?>
