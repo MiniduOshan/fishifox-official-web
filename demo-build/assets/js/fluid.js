@@ -1476,7 +1476,7 @@ window.addEventListener('mouseup', () => {
 });
 
 window.addEventListener('touchstart', e => {
-    e.preventDefault();
+    // e.preventDefault(); removed to allow native scrolling
     const touches = e.targetTouches;
     while (touches.length >= pointers.length)
         pointers.push(new pointerPrototype());
@@ -1485,10 +1485,10 @@ window.addEventListener('touchstart', e => {
         let posY = scaleByPixelRatio(touches[i].clientY);
         updatePointerDownData(pointers[i + 1], touches[i].identifier, posX, posY);
     }
-}, { passive: false });
+}, { passive: true });
 
 window.addEventListener('touchmove', e => {
-    e.preventDefault();
+    // e.preventDefault(); removed to allow native scrolling
     const touches = e.targetTouches;
     for (let i = 0; i < touches.length; i++) {
         let pointer = pointers[i + 1];
@@ -1497,7 +1497,7 @@ window.addEventListener('touchmove', e => {
         let posY = scaleByPixelRatio(touches[i].clientY);
         updatePointerMoveData(pointer, posX, posY);
     }
-}, { passive: false });
+}, { passive: true });
 
 window.addEventListener('touchend', e => {
     const touches = e.changedTouches;

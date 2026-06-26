@@ -298,7 +298,6 @@
         const portfolioMask = document.querySelector('.portfolio-grid-mask');
         
         if (portfolioGrid && portfolioSection && portfolioMask) {
-            portfolioSection.style.overflow = 'hidden';
             
             let getScrollAmount = () => {
                 let overflow = portfolioGrid.scrollWidth - portfolioMask.offsetWidth;
@@ -313,6 +312,7 @@
 
             let mm = gsap.matchMedia();
             mm.add("(min-width: 1025px)", () => {
+                portfolioSection.style.overflow = 'hidden';
                 gsap.to(portfolioGrid, {
                     x: getScrollAmount,
                     ease: "none",
@@ -513,7 +513,7 @@
     <!-- Execution Module Pipelines -->
     <script src="assets/js/theme.js"></script>
     <script src="assets/js/parallax.js"></script>
-    <script src="assets/js/script.js"></script>
-    <script src="assets/js/fluid.js"></script>
+    <script src="assets/js/script.js?v=3"></script>
+    <script src="assets/js/fluid.js?v=3"></script>
 </body>
 </html>

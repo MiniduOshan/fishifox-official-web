@@ -206,6 +206,7 @@ section {
     .portfolio-layout-wrapper {
         flex-direction: column;
         gap: 40px;
+        align-items: stretch;
     }
     .portfolio-header-side {
         flex: 1;
@@ -215,6 +216,8 @@ section {
         overflow-x: auto;
         padding-bottom: 20px;
         scroll-snap-type: x mandatory;
+        width: 100%;
+        max-width: 100%;
     }
     .portfolio-grid-side {
         width: max-content;
