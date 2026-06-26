@@ -3,47 +3,50 @@
     <style>
         .footer {
             background-color: var(--footer-bg);
-            padding: 4rem 2rem 2rem;
+            padding: 5rem 2rem 2rem;
             color: #f8fafc;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: 'Inter', sans-serif;
         }
         .footer-container {
             max-width: 1200px;
             margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 2rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
         }
         .footer-brand {
-            flex: 1;
-            min-width: 250px;
+            padding-right: 2rem;
         }
         .footer-logo {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             text-decoration: none;
+            transition: transform 0.3s;
+        }
+        .footer-logo:hover {
+            transform: scale(1.02);
         }
         .footer-logo img {
-            height: 40px;
+            height: 50px;
         }
-        .footer-logo span {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 24px;
-            color: #f8fafc;
-            letter-spacing: 1px;
+        .footer-links h3, .footer-social h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            position: relative;
+            padding-bottom: 0.5rem;
         }
-        .footer-links {
-            flex: 1;
-            min-width: 200px;
-        }
-        .footer-links h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
+        .footer-links h3::after, .footer-social h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent-color);
         }
         .footer-links ul {
             list-style: none;
@@ -51,47 +54,72 @@
             margin: 0;
         }
         .footer-links li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
         }
         .footer-links a {
             color: #94a3b8;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: all 0.3s ease;
+            display: inline-block;
         }
         .footer-links a:hover {
             color: var(--accent-color);
-        }
-        .footer-social {
-            flex: 1;
-            min-width: 200px;
-        }
-        .footer-social h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
+            transform: translateX(5px);
         }
         .social-icons {
             display: flex;
             gap: 1rem;
+            flex-wrap: wrap;
         }
         .social-icons a {
-            color: #94a3b8;
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 1.2rem;
             text-decoration: none;
-            transition: transform 0.3s, color 0.3s;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .social-icons a:hover {
-            color: var(--accent-color);
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
             transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
         }
         .footer-bottom {
             max-width: 1200px;
-            margin: 3rem auto 0;
+            margin: 4rem auto 0;
             padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
-            color: #94a3b8;
-            font-size: 0.9rem;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 992px) {
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+            .footer-brand {
+                grid-column: span 2;
+                padding-right: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .footer-brand {
+                grid-column: span 1;
+            }
         }
     </style>
 
@@ -110,19 +138,43 @@
             <div class="footer-links">
                 <h3>Quick Links</h3>
                 <ul>
-                    <li><a href="#about">About Us</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="index#about">About Us</a></li>
+                    <li><a href="news">News</a></li>
+                    <li><a href="faq">FAQ</a></li>
+                    <li><a href="index#contact">Contact</a></li>
                 </ul>
             </div>
 
             <div class="footer-social">
                 <h3>Connect With Us</h3>
                 <div class="social-icons">
-                    <a href="#" title="Facebook">📘</a>
-                    <a href="#" title="Twitter">🐦</a>
-                    <a href="#" title="Instagram">📸</a>
-                    <a href="#" title="LinkedIn">💼</a>
+                    <?php
+                    // Ensure PDO is available
+                    global $pdo;
+                    $socials = ['facebook' => '', 'twitter' => '', 'instagram' => '', 'linkedin' => ''];
+                    if (isset($pdo)) {
+                        $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'social_%'");
+                        while ($row = $stmt->fetch()) {
+                            $key = str_replace('social_', '', $row['setting_key']);
+                            $socials[$key] = $row['setting_value'];
+                        }
+                    }
+                    ?>
+                    <?php if (!empty($socials['facebook'])): ?>
+                        <a href="<?= htmlspecialchars($socials['facebook']) ?>" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($socials['twitter'])): ?>
+                        <a href="<?= htmlspecialchars($socials['twitter']) ?>" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($socials['instagram'])): ?>
+                        <a href="<?= htmlspecialchars($socials['instagram']) ?>" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($socials['linkedin'])): ?>
+                        <a href="<?= htmlspecialchars($socials['linkedin']) ?>" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -1,38 +1,36 @@
 <?php
-$dataFile = 'data/content.json';
-$data = [];
-if (file_exists($dataFile)) {
-    $data = json_decode(file_get_contents($dataFile), true);
-}
+require_once 'config/database.php';
+$data['news'] = $pdo->query("SELECT * FROM news ORDER BY is_headline DESC, date DESC, id DESC")->fetchAll();
 ?>
 <?php include 'includes/header.php'; ?>
 
 <!-- News Page Header -->
-<section class="hero" id="hero" style="min-height: 50vh; align-items: flex-end; padding-bottom: 50px;">
-    <div class="hero-content">
-        <h1 class="hero-title" style="font-size: clamp(32px, 5vw, 60px);">
-            <span class="line">Latest Updates</span>
-        </h1>
-        <p class="hero-description">Stay up-to-date with the latest news, announcements, and insights from FishiFox.</p>
+<section class="hero bbc-hero" id="hero" style="min-height: auto; padding-top: 140px; padding-bottom: 20px; background: transparent;">
+    <div class="hero-content" style="max-width: 1200px; text-align: left; margin: 0 auto; padding: 0 20px;">
+        <h1 class="bbc-page-title" style="font-family: 'Arial', sans-serif; font-size: 40px; font-weight: bold; color: var(--text-primary); margin: 0; border-bottom: 2px solid #B80000; padding-bottom: 10px; display: inline-block;">News</h1>
     </div>
 </section>
 
 <!-- News Grid Section -->
-<section class="news-section" id="news" style="padding-top: 0;">
-    <div class="news-grid reveal" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+<section class="news-section bbc-news-container" id="news" style="padding-top: 20px; padding-bottom: 80px;">
+    <div class="bbc-news-grid reveal" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
         <?php if(!empty($data['news'])): ?>
-            <?php foreach($data['news'] as $news): ?>
-            <div class="news-card" style="background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 2rem; border-radius: 12px; width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+            <?php foreach($data['news'] as $index => $news): ?>
+            <a href="article?id=<?= $news['id'] ?>" class="bbc-news-card <?= $index === 0 ? 'bbc-featured-story' : '' ?>">
                 <?php if(!empty($news['image'])): ?>
-                    <img src="<?= htmlspecialchars($news['image']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
+                    <div class="bbc-img-wrapper">
+                        <img src="<?= htmlspecialchars($news['image']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="bbc-news-img">
+                    </div>
                 <?php endif; ?>
-                <span class="news-date" style="color: var(--primary-light); font-size: 0.9rem; font-weight: bold;"><?= htmlspecialchars($news['date']) ?></span>
-                <h3 class="news-title" style="margin: 1rem 0; font-size: 1.25rem; font-family: 'Space Grotesk', sans-serif;"><?= htmlspecialchars($news['title']) ?></h3>
-                <p class="news-desc" style="color: var(--text-secondary); flex: 1; line-height: 1.6;"><?= htmlspecialchars($news['content']) ?></p>
-            </div>
+                <div class="bbc-news-content">
+                    <h3 class="bbc-news-title"><?= htmlspecialchars($news['title']) ?></h3>
+                    <p class="bbc-news-desc"><?= nl2br(htmlspecialchars($news['content'])) ?></p>
+                    <span class="bbc-news-date"><?= htmlspecialchars($news['date']) ?></span>
+                </div>
+            </a>
             <?php endforeach; ?>
         <?php else: ?>
-            <p>No news available at the moment. Check back later!</p>
+            <p style="color: var(--text-primary);">No news available at the moment. Check back later!</p>
         <?php endif; ?>
     </div>
 </section>

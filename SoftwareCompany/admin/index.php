@@ -29,6 +29,7 @@ $data['projects'] = $pdo->query("SELECT * FROM projects")->fetchAll();
 $data['news'] = $pdo->query("SELECT * FROM news")->fetchAll();
 $data['clients'] = $pdo->query("SELECT * FROM clients")->fetchAll();
 $data['stats'] = $pdo->query("SELECT * FROM stats")->fetchAll();
+$data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_about'])) {
@@ -37,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('vision', ?), ('mission', ?)");
         $stmt->execute([$vision, $mission]);
     } elseif (isset($_POST['save_service'])) {
-        $icon = $_POST['service_icon'];
-        $image = $_POST['service_image'];
+        $icon = $_POST['service_icon'] ?? '';
+        $image = $_POST['service_image'] ?? '';
         $title = $_POST['service_title'];
         $desc = $_POST['service_desc'];
 
@@ -72,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $image = $_POST['project_image'];
         $title = $_POST['project_title'];
         $desc = $_POST['project_desc'];
+        $url = $_POST['project_url'] ?? null;
 
         if (isset($_FILES['project_image_file']) && $_FILES['project_image_file']['error'] == 0) {
             $fileName = time() . '_' . basename($_FILES['project_image_file']['name']);
@@ -84,15 +86,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['edit_project_index']) && $_POST['edit_project_index'] !== '') {
             $id = $_POST['edit_project_index'];
             if (empty($image) && empty($_FILES['project_image_file']['name'])) {
-                $stmt = $pdo->prepare("UPDATE projects SET icon=?, title=?, description=? WHERE id=?");
-                $stmt->execute([$icon, $title, $desc, $id]);
+                $stmt = $pdo->prepare("UPDATE projects SET icon=?, title=?, description=?, url=? WHERE id=?");
+                $stmt->execute([$icon, $title, $desc, $url, $id]);
             } else {
-                $stmt = $pdo->prepare("UPDATE projects SET icon=?, image=?, title=?, description=? WHERE id=?");
-                $stmt->execute([$icon, $image, $title, $desc, $id]);
+                $stmt = $pdo->prepare("UPDATE projects SET icon=?, image=?, title=?, description=?, url=? WHERE id=?");
+                $stmt->execute([$icon, $image, $title, $desc, $url, $id]);
             }
         } else {
-            $stmt = $pdo->prepare("INSERT INTO projects (icon, image, title, description) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$icon, $image, $title, $desc]);
+            $stmt = $pdo->prepare("INSERT INTO projects (icon, image, title, description, url) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$icon, $image, $title, $desc, $url]);
         }
     } elseif (isset($_POST['delete_project'])) {
         $stmt = $pdo->prepare("DELETE FROM projects WHERE id=?");
@@ -102,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $title = $_POST['news_title'];
         $image = $_POST['news_image'];
         $content = $_POST['news_content'];
+        $is_headline = isset($_POST['news_is_headline']) ? 1 : 0;
 
         if (isset($_FILES['news_image_file']) && $_FILES['news_image_file']['error'] == 0) {
             $fileName = time() . '_' . basename($_FILES['news_image_file']['name']);
@@ -114,15 +117,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['edit_news_index']) && $_POST['edit_news_index'] !== '') {
             $id = $_POST['edit_news_index'];
             if (empty($image) && empty($_FILES['news_image_file']['name'])) {
-                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, content=? WHERE id=?");
-                $stmt->execute([$date, $title, $content, $id]);
+                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, content=?, is_headline=? WHERE id=?");
+                $stmt->execute([$date, $title, $content, $is_headline, $id]);
             } else {
-                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, image=?, content=? WHERE id=?");
-                $stmt->execute([$date, $title, $image, $content, $id]);
+                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, image=?, content=?, is_headline=? WHERE id=?");
+                $stmt->execute([$date, $title, $image, $content, $is_headline, $id]);
             }
         } else {
-            $stmt = $pdo->prepare("INSERT INTO news (date, title, image, content) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$date, $title, $image, $content]);
+            $stmt = $pdo->prepare("INSERT INTO news (date, title, image, content, is_headline) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$date, $title, $image, $content, $is_headline]);
         }
     } elseif (isset($_POST['delete_news'])) {
         $stmt = $pdo->prepare("DELETE FROM news WHERE id=?");
@@ -156,6 +159,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['contact_email'];
         $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('contact_address', ?), ('contact_tp', ?), ('contact_email', ?)");
         $stmt->execute([$address, $tp, $email]);
+    } elseif (isset($_POST['update_socials'])) {
+        $fb = $_POST['social_facebook'];
+        $tw = $_POST['social_twitter'];
+        $ig = $_POST['social_instagram'];
+        $li = $_POST['social_linkedin'];
+        $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('social_facebook', ?), ('social_twitter', ?), ('social_instagram', ?), ('social_linkedin', ?)");
+        $stmt->execute([$fb, $tw, $ig, $li]);
+    } elseif (isset($_POST['save_faq'])) {
+        $question = $_POST['faq_question'];
+        $answer = $_POST['faq_answer'];
+        if (isset($_POST['edit_faq_index']) && $_POST['edit_faq_index'] !== '') {
+            $id = $_POST['edit_faq_index'];
+            $stmt = $pdo->prepare("UPDATE faqs SET question=?, answer=? WHERE id=?");
+            $stmt->execute([$question, $answer, $id]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO faqs (question, answer) VALUES (?, ?)");
+            $stmt->execute([$question, $answer]);
+        }
+    } elseif (isset($_POST['delete_faq'])) {
+        $stmt = $pdo->prepare("DELETE FROM faqs WHERE id=?");
+        $stmt->execute([$_POST['delete_faq']]);
     }
 
     header("Location: index.php");
@@ -168,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - FishiFox</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?= time() ?>">
 </head>
 <body>
 
@@ -183,20 +207,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="admin-layout">
     <div class="admin-sidebar">
         <ul>
-            <li><a class="nav-link active" data-target="about-card">About</a></li>
+            <li><a class="nav-link active" data-target="news-card">News</a></li>
+            <li><a class="nav-link" data-target="projects-card">Products</a></li>
             <li><a class="nav-link" data-target="stats-card">Stats</a></li>
+            <li><a class="nav-link" data-target="about-card">About</a></li>
             <li><a class="nav-link" data-target="services-card">Services</a></li>
-            <li><a class="nav-link" data-target="projects-card">Projects</a></li>
-            <li><a class="nav-link" data-target="news-card">News</a></li>
             <li><a class="nav-link" data-target="clients-card">Clients</a></li>
             <li><a class="nav-link" data-target="contact-card">Contact</a></li>
+            <li><a class="nav-link" data-target="socials-card">Socials</a></li>
+            <li><a class="nav-link" data-target="faq-card">FAQ</a></li>
         </ul>
     </div>
 
     <div class="admin-container">
 
         <!-- About Section -->
-        <div class="admin-card active" id="about-card">
+        <div class="admin-card" id="about-card">
             <h2>About</h2>
             <form method="post">
                 <div class="form-group">
@@ -273,14 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label>Icon (Emoji or Text - Optional)</label>
                             <input type="text" name="service_icon" id="service_icon">
                         </div>
-                        <div class="form-group">
-                            <label>Image Upload (Local file - Optional)</label>
-                            <input type="file" name="service_image_file" accept="image/*">
-                        </div>
-                        <div class="form-group">
-                            <label>OR Image URL (External link - Optional)</label>
-                            <input type="url" name="service_image" id="service_image" placeholder="https://example.com/image.jpg">
-                        </div>
+
                         <div class="form-group">
                             <label>Title</label>
                             <input type="text" name="service_title" id="service_title" required>
@@ -327,12 +346,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <!-- Projects Section -->
+        <!-- Products Section -->
         <div class="admin-card" id="projects-card">
-            <h2>Projects (Portfolio)</h2>
+            <h2>Products (Portfolio)</h2>
             <div class="split-layout">
                 <div class="form-section">
-                    <h3 id="project-form-title" style="margin-top: 0;">Add New Project</h3>
+                    <h3 id="project-form-title" style="margin-top: 0;">Add New Product</h3>
                     <form method="post" enctype="multipart/form-data" id="project-form">
                         <input type="hidden" name="edit_project_index" id="edit_project_index" value="">
                         <div class="form-group">
@@ -348,6 +367,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="url" name="project_image" id="project_image" placeholder="https://example.com/image.jpg">
                         </div>
                         <div class="form-group">
+                            <label>Product Link URL (Optional)</label>
+                            <input type="url" name="project_url" id="project_url" placeholder="https://example.com">
+                        </div>
+                        <div class="form-group">
                             <label>Title</label>
                             <input type="text" name="project_title" id="project_title" required>
                         </div>
@@ -355,7 +378,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label>Description</label>
                             <textarea name="project_desc" id="project_desc" required></textarea>
                         </div>
-                        <button type="submit" name="save_project" id="project-submit-btn" class="btn">Add Project</button>
+                        <button type="submit" name="save_project" id="project-submit-btn" class="btn">Add Product</button>
                         <button type="button" id="project-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
                     </form>
                 </div>
@@ -381,7 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td><?= htmlspecialchars($project['title'] ?? '') ?></td>
                             <td><?= htmlspecialchars($project['description'] ?? '') ?></td>
                             <td>
-                                <button type="button" class="btn edit-project-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $project['id'] ?>" data-icon="<?= htmlspecialchars($project['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($project['image'] ?? '') ?>" data-title="<?= htmlspecialchars($project['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($project['description'] ?? '') ?>">Edit</button>
+                                <button type="button" class="btn edit-project-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $project['id'] ?>" data-icon="<?= htmlspecialchars($project['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($project['image'] ?? '') ?>" data-title="<?= htmlspecialchars($project['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($project['description'] ?? '') ?>" data-url="<?= htmlspecialchars($project['url'] ?? '') ?>">Edit</button>
                                 <form method="post" style="display:inline;">
                                     <button type="submit" name="delete_project" value="<?= $project['id'] ?>" class="btn btn-danger">Delete</button>
                                 </form>
@@ -394,7 +417,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <!-- News Section -->
-        <div class="admin-card" id="news-card">
+        <div class="admin-card active" id="news-card">
             <h2>News</h2>
             <div class="split-layout">
                 <div class="form-section">
@@ -416,6 +439,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="form-group">
                             <label>Title</label>
                             <input type="text" name="news_title" id="news_title" required>
+                            
+                            <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: var(--text-secondary); cursor: pointer;">
+                                <input type="checkbox" name="news_is_headline" id="news_is_headline" style="width: auto; margin: 0;">
+                                Set as Featured Headline (Will appear first)
+                            </label>
                         </div>
                         <div class="form-group">
                             <label>Content</label>
@@ -447,7 +475,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td><?= htmlspecialchars($news['title'] ?? '') ?></td>
                             <td><?= htmlspecialchars($news['content'] ?? '') ?></td>
                             <td>
-                                <button type="button" class="btn edit-news-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $news['id'] ?>" data-date="<?= htmlspecialchars($news['date'] ?? '') ?>" data-image="<?= htmlspecialchars($news['image'] ?? '') ?>" data-title="<?= htmlspecialchars($news['title'] ?? '') ?>" data-content="<?= htmlspecialchars($news['content'] ?? '') ?>">Edit</button>
+                                <button type="button" class="btn edit-news-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $news['id'] ?>" data-date="<?= htmlspecialchars($news['date'] ?? '') ?>" data-image="<?= htmlspecialchars($news['image'] ?? '') ?>" data-title="<?= htmlspecialchars($news['title'] ?? '') ?>" data-content="<?= htmlspecialchars($news['content'] ?? '') ?>" data-headline="<?= $news['is_headline'] ?? 0 ?>">Edit</button>
                                 <form method="post" style="display:inline;">
                                     <button type="submit" name="delete_news" value="<?= $news['id'] ?>" class="btn btn-danger">Delete</button>
                                 </form>
@@ -477,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2>Contact Information</h2>
             <form method="post">
                 <div class="form-group">
-                    <label>Headquarters Address</label>
+                    <label>LOCATION</label>
                     <textarea name="contact_address" required rows="3"><?= htmlspecialchars($data['contact']['address'] ?? '') ?></textarea>
                 </div>
                 <div class="form-group">
@@ -492,6 +520,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
 
+        <!-- Social Section -->
+        <div class="admin-card" id="socials-card">
+            <h2>Social Media Links</h2>
+            <form method="post">
+                <div class="form-group">
+                    <label>Facebook URL</label>
+                    <input type="url" name="social_facebook" value="<?= htmlspecialchars($data['social_facebook'] ?? '') ?>" placeholder="Leave blank to hide">
+                </div>
+                <div class="form-group">
+                    <label>Twitter (X) URL</label>
+                    <input type="url" name="social_twitter" value="<?= htmlspecialchars($data['social_twitter'] ?? '') ?>" placeholder="Leave blank to hide">
+                </div>
+                <div class="form-group">
+                    <label>Instagram URL</label>
+                    <input type="url" name="social_instagram" value="<?= htmlspecialchars($data['social_instagram'] ?? '') ?>" placeholder="Leave blank to hide">
+                </div>
+                <div class="form-group">
+                    <label>LinkedIn URL</label>
+                    <input type="url" name="social_linkedin" value="<?= htmlspecialchars($data['social_linkedin'] ?? '') ?>" placeholder="Leave blank to hide">
+                </div>
+                <button type="submit" name="update_socials" class="btn">Update Social Links</button>
+            </form>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="admin-card" id="faq-card">
+            <h2>Frequently Asked Questions</h2>
+            <div class="split-layout">
+                <div class="form-section">
+                    <h3 id="faq-form-title" style="margin-top: 0;">Add New FAQ</h3>
+                    <form method="post" id="faq-form">
+                        <input type="hidden" name="edit_faq_index" id="edit_faq_index" value="">
+                        <div class="form-group">
+                            <label>Question</label>
+                            <input type="text" name="faq_question" id="faq_question" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Answer</label>
+                            <textarea name="faq_answer" id="faq_answer" required></textarea>
+                        </div>
+                        <button type="submit" name="save_faq" id="faq-submit-btn" class="btn">Add FAQ</button>
+                        <button type="button" id="faq-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
+                    </form>
+                </div>
+                <div class="table-section">
+                    <table>
+                        <tr>
+                            <th>Question</th>
+                            <th>Answer</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($data['faq'] ?? [] as $faq): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($faq['question'] ?? '') ?></td>
+                            <td><?= htmlspecialchars(substr($faq['answer'] ?? '', 0, 50)) ?>...</td>
+                            <td style="white-space: nowrap;">
+                                <button type="button" class="btn edit-faq-btn" 
+                                    data-index="<?= $faq['id'] ?>" 
+                                    data-question="<?= htmlspecialchars($faq['question'] ?? '') ?>" 
+                                    data-answer="<?= htmlspecialchars($faq['answer'] ?? '') ?>"
+                                    style="background-color: #f59e0b;">Edit</button>
+                                <form method="post" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this FAQ?');">
+                                    <input type="hidden" name="delete_faq" value="<?= $faq['id'] ?>">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -500,6 +601,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-link');
     const cards = document.querySelectorAll('.admin-card');
 
+    // Check for saved tab
+    const savedTab = localStorage.getItem('activeAdminTab');
+
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
             navLinks.forEach(l => l.classList.remove('active'));
@@ -507,8 +611,19 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
             const targetId = this.getAttribute('data-target');
             document.getElementById(targetId).classList.add('active');
+            
+            // Save active tab
+            localStorage.setItem('activeAdminTab', targetId);
         });
     });
+
+    // Restore saved tab on load
+    if (savedTab) {
+        const targetLink = document.querySelector(`.nav-link[data-target="${savedTab}"]`);
+        if (targetLink) {
+            targetLink.click();
+        }
+    }
 
     // Stat Edit Logic
     const editStatBtns = document.querySelectorAll('.edit-stat-btn');
@@ -543,7 +658,6 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', function() {
                 document.getElementById('edit_service_index').value = this.getAttribute('data-index');
                 document.getElementById('service_icon').value = this.getAttribute('data-icon');
-                document.getElementById('service_image').value = this.getAttribute('data-image');
                 document.getElementById('service_title').value = this.getAttribute('data-title');
                 document.getElementById('service_desc').value = this.getAttribute('data-desc');
                 document.getElementById('service-form-title').innerText = 'Edit Service';
@@ -570,10 +684,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('edit_project_index').value = this.getAttribute('data-index');
                 document.getElementById('project_icon').value = this.getAttribute('data-icon');
                 document.getElementById('project_image').value = this.getAttribute('data-image');
+                document.getElementById('project_url').value = this.getAttribute('data-url');
                 document.getElementById('project_title').value = this.getAttribute('data-title');
                 document.getElementById('project_desc').value = this.getAttribute('data-desc');
-                document.getElementById('project-form-title').innerText = 'Edit Project';
-                document.getElementById('project-submit-btn').innerText = 'Update Project';
+                document.getElementById('project-form-title').innerText = 'Edit Product';
+                document.getElementById('project-submit-btn').innerText = 'Update Product';
                 projectCancelBtn.style.display = 'inline-block';
                 document.getElementById('project_title').focus();
             });
@@ -581,8 +696,8 @@ document.addEventListener('DOMContentLoaded', function() {
         projectCancelBtn.addEventListener('click', function() {
             document.getElementById('project-form').reset();
             document.getElementById('edit_project_index').value = '';
-            document.getElementById('project-form-title').innerText = 'Add New Project';
-            document.getElementById('project-submit-btn').innerText = 'Add Project';
+            document.getElementById('project-form-title').innerText = 'Add New Product';
+            document.getElementById('project-submit-btn').innerText = 'Add Product';
             this.style.display = 'none';
         });
     }
@@ -597,6 +712,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('news_date').value = this.getAttribute('data-date');
                 document.getElementById('news_image').value = this.getAttribute('data-image');
                 document.getElementById('news_title').value = this.getAttribute('data-title');
+                document.getElementById('news_is_headline').checked = this.getAttribute('data-headline') === '1';
                 document.getElementById('news_content').value = this.getAttribute('data-content');
                 document.getElementById('news-form-title').innerText = 'Edit News Item';
                 document.getElementById('news-submit-btn').innerText = 'Update News';
@@ -609,6 +725,30 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('edit_news_index').value = '';
             document.getElementById('news-form-title').innerText = 'Add News Item';
             document.getElementById('news-submit-btn').innerText = 'Add News';
+            this.style.display = 'none';
+        });
+    }
+
+    // FAQ Edit Logic
+    const editFaqBtns = document.querySelectorAll('.edit-faq-btn');
+    const faqCancelBtn = document.getElementById('faq-cancel-btn');
+    if (faqCancelBtn) {
+        editFaqBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('edit_faq_index').value = this.getAttribute('data-index');
+                document.getElementById('faq_question').value = this.getAttribute('data-question');
+                document.getElementById('faq_answer').value = this.getAttribute('data-answer');
+                document.getElementById('faq-form-title').innerText = 'Edit FAQ';
+                document.getElementById('faq-submit-btn').innerText = 'Update FAQ';
+                faqCancelBtn.style.display = 'inline-block';
+                document.getElementById('faq_question').focus();
+            });
+        });
+        faqCancelBtn.addEventListener('click', function() {
+            document.getElementById('faq-form').reset();
+            document.getElementById('edit_faq_index').value = '';
+            document.getElementById('faq-form-title').innerText = 'Add New FAQ';
+            document.getElementById('faq-submit-btn').innerText = 'Add FAQ';
             this.style.display = 'none';
         });
     }

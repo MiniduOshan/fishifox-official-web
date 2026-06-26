@@ -11,10 +11,8 @@ $base = $isHome ? '' : 'index';
     <ul class="nav-links">
         <li><a href="<?= $base ?>#services">Services</a></li>
         <li><a href="<?= $base ?>#about">About</a></li>
-        <li><a href="<?= $base ?>#portfolio">Portfolio</a></li>
-        <li><a href="news" class="<?= $currentPage === 'news.php' ? 'active' : '' ?>">News</a></li>
-        <li><a href="<?= $base ?>#clients">Clients</a></li>
-        <li><a href="faq" class="<?= $currentPage === 'faq.php' ? 'active' : '' ?>">FAQ</a></li>
+        <li><a href="<?= $base ?>#portfolio">Products</a></li>
+        <li><a href="<?= $base ?>#contact">Contact Us</a></li>
     </ul>
     <a href="<?= $base ?>#contact" class="nav-cta">Get Started</a>
 </nav>

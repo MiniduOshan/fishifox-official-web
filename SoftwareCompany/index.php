@@ -15,7 +15,7 @@ $data['contact'] = ['address' => $data['contact_address'] ?? ''];
 // Fetch other tables
 $data['services'] = $pdo->query("SELECT * FROM services")->fetchAll();
 $data['projects'] = $pdo->query("SELECT * FROM projects")->fetchAll();
-$data['news'] = $pdo->query("SELECT * FROM news")->fetchAll();
+$data['news'] = $pdo->query("SELECT * FROM news ORDER BY date DESC, id DESC")->fetchAll();
 $data['clients'] = $pdo->query("SELECT * FROM clients")->fetchAll();
 $data['stats'] = $pdo->query("SELECT * FROM stats")->fetchAll();
 $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
@@ -44,13 +44,15 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
         <?php if(!empty($data['stats'])): ?>
             <?php foreach($data['stats'] as $stat): ?>
             <div class="stat-card reveal">
-                <div class="stat-icon"><?= htmlspecialchars($stat['icon']) ?></div>
                 <div class="stat-number" data-target="<?= htmlspecialchars($stat['number']) ?>">0</div>
                 <div class="stat-label"><?= htmlspecialchars($stat['label']) ?></div>
             </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p>No stats available.</p>
+            <div class="stat-card reveal">
+                <div class="stat-number" data-target="0">0</div>
+                <div class="stat-label">No stats available</div>
+            </div>
         <?php endif; ?>
     </div>
 </section>
@@ -72,7 +74,7 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
                     <div class="service-icon"><?= htmlspecialchars($service['icon']) ?></div>
                 <?php endif; ?>
                 <h3 class="service-title"><?= htmlspecialchars($service['title']) ?></h3>
-                <p class="service-desc"><?= htmlspecialchars($service['description']) ?></p>
+                <p class="service-desc"><?= nl2br(htmlspecialchars($service['description'])) ?></p>
                 <a href="#contact" class="service-link">Get Quote →</a>
             </div>
             <?php endforeach; ?>
@@ -95,10 +97,10 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
         </div>
         <div class="reveal glass-panel" style="max-width: 800px; margin: 0 auto; padding: 3rem; border-radius: 24px;">
             <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary-light);">Our Vision</h3>
-            <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; color: #e2e8f0;"><?= htmlspecialchars($data['vision'] ?? '') ?></p>
+            <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; color: #e2e8f0;"><?= nl2br(htmlspecialchars($data['vision'] ?? '')) ?></p>
             
             <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary-light);">Our Mission</h3>
-            <p style="font-size: 1.1rem; line-height: 1.6; color: #e2e8f0;"><?= htmlspecialchars($data['mission'] ?? '') ?></p>
+            <p style="font-size: 1.1rem; line-height: 1.6; color: #e2e8f0;"><?= nl2br(htmlspecialchars($data['mission'] ?? '')) ?></p>
         </div>
     </div>
 </section>
@@ -110,29 +112,36 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
     <div class="portfolio-layout-wrapper">
         <div class="portfolio-header-side reveal">
             <p class="section-label">Our Work</p>
-            <h2 class="section-title" style="margin-bottom: 20px; text-align: left;">Case Studies & Projects</h2>
+            <h2 class="section-title" style="margin-bottom: 20px; text-align: left;">Case Studies & Products</h2>
             <p class="section-desc" style="text-align: left; line-height: 1.6;">Explore some of our finest deliveries. We design robust digital experiences tailored to elevate brands and engage users.</p>
         </div>
         
-        <div class="portfolio-grid-side">
-            <?php if(!empty($data['projects'])): ?>
-            <?php foreach($data['projects'] as $project): ?>
-            <div class="portfolio-card reveal">
-                <?php if(!empty($project['image'])): ?>
-                    <img src="<?= htmlspecialchars($project['image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
-                <?php else: ?>
-                    <div class="portfolio-img-placeholder"><?= htmlspecialchars($project['icon'] ?? '📁') ?></div>
-                <?php endif; ?>
-                <div class="portfolio-content">
-                    <span class="portfolio-tag">Project</span>
-                    <h3 class="portfolio-title"><?= htmlspecialchars($project['title']) ?></h3>
-                    <p class="portfolio-desc"><?= htmlspecialchars($project['description']) ?></p>
-                </div>
+        <div class="portfolio-grid-mask">
+            <div class="portfolio-grid-side">
+                <?php if(!empty($data['projects'])): ?>
+                <?php foreach($data['projects'] as $project): ?>
+                <?php 
+                    $hasUrl = !empty($project['url']);
+                    $urlAttr = $hasUrl ? 'href="' . htmlspecialchars($project['url']) . '" target="_blank" style="text-decoration: none; color: inherit; display: block;"' : 'style="display: block;"';
+                    $tag = $hasUrl ? 'a' : 'div';
+                ?>
+                <<?= $tag ?> <?= $urlAttr ?> class="portfolio-card reveal">
+                    <?php if(!empty($project['image'])): ?>
+                        <img src="<?= htmlspecialchars($project['image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                    <?php else: ?>
+                        <div class="portfolio-img-placeholder"><?= htmlspecialchars($project['icon'] ?? '📁') ?></div>
+                    <?php endif; ?>
+                    <div class="portfolio-content">
+                        <span class="portfolio-tag">Product</span>
+                        <h3 class="portfolio-title"><?= htmlspecialchars($project['title']) ?></h3>
+                        <p class="portfolio-desc"><?= nl2br(htmlspecialchars($project['description'])) ?></p>
+                    </div>
+                </<?= $tag ?>>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No projects available.</p>
+            <?php endif; ?>
             </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No projects available.</p>
-        <?php endif; ?>
         </div>
     </div>
 </section>
@@ -193,8 +202,8 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
                 <div class="contact-detail-item">
                     <div class="contact-detail-icon">📍</div>
                     <div class="contact-detail-text">
-                        <h5>Headquarters</h5>
-                        <p><?= htmlspecialchars($data['contact']['address'] ?? 'No146/120D, Salmal Place, Mattegoda, Kottawa, Sri Lanka') ?></p>
+                        <h5>LOCATION</h5>
+                        <p><?= nl2br(htmlspecialchars($data['contact']['address'] ?? 'No146/120D, Salmal Place, Mattegoda, Kottawa, Sri Lanka')) ?></p>
                     </div>
                 </div>
                 <div class="contact-detail-item">
@@ -234,7 +243,41 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
         gsap.to('.scroll-indicator', { opacity: 1, duration: 0.7, delay: 0.62 });
 
 
+        // Horizontal Scroll for Portfolio
+        const portfolioSection = document.querySelector('.portfolio-section');
+        const portfolioGrid = document.querySelector('.portfolio-grid-side');
+        const portfolioMask = document.querySelector('.portfolio-grid-mask');
+        
+        if (portfolioGrid && portfolioSection && portfolioMask) {
+            portfolioSection.style.overflow = 'hidden';
+            
+            let getScrollAmount = () => {
+                let overflow = portfolioGrid.scrollWidth - portfolioMask.offsetWidth;
+                // Only move if there is overflow
+                return overflow > 0 ? -(overflow + 40) : 0;
+            };
 
+            let getScrollEnd = () => {
+                let overflow = portfolioGrid.scrollWidth - portfolioMask.offsetWidth;
+                return overflow > 0 ? `+=${overflow}` : "+=0";
+            };
+
+            let mm = gsap.matchMedia();
+            mm.add("(min-width: 1025px)", () => {
+                gsap.to(portfolioGrid, {
+                    x: getScrollAmount,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: portfolioSection,
+                        start: "top 5%",
+                        end: getScrollEnd,
+                        pin: true,
+                        scrub: 1,
+                        invalidateOnRefresh: true
+                    }
+                });
+            });
+        }
 
 
         // Stats Counter Effect

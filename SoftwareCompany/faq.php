@@ -1,14 +1,11 @@
 <?php
-$dataFile = 'data/content.json';
-$data = [];
-if (file_exists($dataFile)) {
-    $data = json_decode(file_get_contents($dataFile), true);
-}
+require_once 'config/database.php';
+$data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
 ?>
 <?php include 'includes/header.php'; ?>
 
 <!-- FAQ Page Header -->
-<section class="hero" id="hero" style="min-height: 50vh; align-items: flex-end; padding-bottom: 50px;">
+<section class="hero" id="hero" style="min-height: 50vh; padding-bottom: 50px;">
     <div class="hero-content">
         <h1 class="hero-title" style="font-size: clamp(32px, 5vw, 60px);">
             <span class="line">Frequently Asked</span>
@@ -24,12 +21,12 @@ if (file_exists($dataFile)) {
         <?php if(!empty($data['faq'])): ?>
             <?php foreach($data['faq'] as $index => $item): ?>
             <div class="faq-item <?= $index === 0 ? 'active' : '' ?>">
-                <div class="faq-header" onclick="this.parentElement.classList.toggle('active')">
+                <div class="faq-header">
                     <span class="faq-question"><?= htmlspecialchars($item['question']) ?></span>
                     <div class="faq-icon-wrapper">▼</div>
                 </div>
                 <div class="faq-content">
-                    <p><?= htmlspecialchars($item['answer']) ?></p>
+                    <p><?= nl2br(htmlspecialchars($item['answer'])) ?></p>
                 </div>
             </div>
             <?php endforeach; ?>
