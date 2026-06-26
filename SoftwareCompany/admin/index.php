@@ -1,11 +1,32 @@
 <?php
-$dataFile = '../data/content.json';
-$data = json_decode(file_get_contents($dataFile), true);
+require_once '../config/database.php';
+
+// Fetch all data for display
+$data = [];
+
+// Fetch settings
+$stmt = $pdo->query("SELECT * FROM settings");
+while ($row = $stmt->fetch()) {
+    $data[$row['setting_key']] = $row['setting_value'];
+}
+// Set fallbacks for settings
+$data['vision'] = $data['vision'] ?? '';
+$data['mission'] = $data['mission'] ?? '';
+$data['contact'] = ['address' => $data['contact_address'] ?? ''];
+
+// Fetch other tables
+$data['services'] = $pdo->query("SELECT * FROM services")->fetchAll();
+$data['projects'] = $pdo->query("SELECT * FROM projects")->fetchAll();
+$data['news'] = $pdo->query("SELECT * FROM news")->fetchAll();
+$data['clients'] = $pdo->query("SELECT * FROM clients")->fetchAll();
+$data['stats'] = $pdo->query("SELECT * FROM stats")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_about'])) {
-        $data['vision'] = $_POST['vision'];
-        $data['mission'] = $_POST['mission'];
+        $vision = $_POST['vision'];
+        $mission = $_POST['mission'];
+        $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('vision', ?), ('mission', ?)");
+        $stmt->execute([$vision, $mission]);
     } elseif (isset($_POST['save_service'])) {
         $icon = $_POST['service_icon'];
         $image = $_POST['service_image'];
@@ -21,16 +42,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (isset($_POST['edit_service_index']) && $_POST['edit_service_index'] !== '') {
-            $index = $_POST['edit_service_index'];
+            $id = $_POST['edit_service_index'];
             if (empty($image) && empty($_FILES['service_image_file']['name'])) {
-                $image = $data['services'][$index]['image'] ?? '';
+                // Keep old image
+                $stmt = $pdo->prepare("UPDATE services SET icon=?, title=?, description=? WHERE id=?");
+                $stmt->execute([$icon, $title, $desc, $id]);
+            } else {
+                $stmt = $pdo->prepare("UPDATE services SET icon=?, image=?, title=?, description=? WHERE id=?");
+                $stmt->execute([$icon, $image, $title, $desc, $id]);
             }
-            $data['services'][$index] = ['icon' => $icon, 'image' => $image, 'title' => $title, 'description' => $desc];
         } else {
-            $data['services'][] = ['icon' => $icon, 'image' => $image, 'title' => $title, 'description' => $desc];
+            $stmt = $pdo->prepare("INSERT INTO services (icon, image, title, description) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$icon, $image, $title, $desc]);
         }
     } elseif (isset($_POST['delete_service'])) {
-        array_splice($data['services'], $_POST['delete_service'], 1);
+        $stmt = $pdo->prepare("DELETE FROM services WHERE id=?");
+        $stmt->execute([$_POST['delete_service']]);
     } elseif (isset($_POST['save_project'])) {
         $icon = $_POST['project_icon'];
         $image = $_POST['project_image'];
@@ -46,16 +73,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (isset($_POST['edit_project_index']) && $_POST['edit_project_index'] !== '') {
-            $index = $_POST['edit_project_index'];
+            $id = $_POST['edit_project_index'];
             if (empty($image) && empty($_FILES['project_image_file']['name'])) {
-                $image = $data['projects'][$index]['image'] ?? '';
+                $stmt = $pdo->prepare("UPDATE projects SET icon=?, title=?, description=? WHERE id=?");
+                $stmt->execute([$icon, $title, $desc, $id]);
+            } else {
+                $stmt = $pdo->prepare("UPDATE projects SET icon=?, image=?, title=?, description=? WHERE id=?");
+                $stmt->execute([$icon, $image, $title, $desc, $id]);
             }
-            $data['projects'][$index] = ['icon' => $icon, 'image' => $image, 'title' => $title, 'description' => $desc];
         } else {
-            $data['projects'][] = ['icon' => $icon, 'image' => $image, 'title' => $title, 'description' => $desc];
+            $stmt = $pdo->prepare("INSERT INTO projects (icon, image, title, description) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$icon, $image, $title, $desc]);
         }
     } elseif (isset($_POST['delete_project'])) {
-        array_splice($data['projects'], $_POST['delete_project'], 1);
+        $stmt = $pdo->prepare("DELETE FROM projects WHERE id=?");
+        $stmt->execute([$_POST['delete_project']]);
     } elseif (isset($_POST['save_news'])) {
         $date = $_POST['news_date'];
         $title = $_POST['news_title'];
@@ -71,48 +103,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (isset($_POST['edit_news_index']) && $_POST['edit_news_index'] !== '') {
-            $index = $_POST['edit_news_index'];
+            $id = $_POST['edit_news_index'];
             if (empty($image) && empty($_FILES['news_image_file']['name'])) {
-                $image = $data['news'][$index]['image'] ?? '';
+                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, content=? WHERE id=?");
+                $stmt->execute([$date, $title, $content, $id]);
+            } else {
+                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, image=?, content=? WHERE id=?");
+                $stmt->execute([$date, $title, $image, $content, $id]);
             }
-            $data['news'][$index] = ['date' => $date, 'title' => $title, 'image' => $image, 'content' => $content];
         } else {
-            $data['news'][] = ['date' => $date, 'title' => $title, 'image' => $image, 'content' => $content];
+            $stmt = $pdo->prepare("INSERT INTO news (date, title, image, content) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$date, $title, $image, $content]);
         }
     } elseif (isset($_POST['delete_news'])) {
-        array_splice($data['news'], $_POST['delete_news'], 1);
+        $stmt = $pdo->prepare("DELETE FROM news WHERE id=?");
+        $stmt->execute([$_POST['delete_news']]);
     } elseif (isset($_POST['update_clients'])) {
         $clientsStr = $_POST['clients'];
-        $clientsArr = array_map('trim', explode("\n", $clientsStr));
-        $data['clients'] = array_filter($clientsArr);
+        $clientsArr = array_filter(array_map('trim', explode("\n", $clientsStr)));
+        $pdo->exec("TRUNCATE TABLE clients");
+        $stmt = $pdo->prepare("INSERT INTO clients (image_url) VALUES (?)");
+        foreach ($clientsArr as $url) {
+            $stmt->execute([$url]);
+        }
     } elseif (isset($_POST['save_stat'])) {
         $icon = $_POST['stat_icon'];
         $number = $_POST['stat_number'];
         $label = $_POST['stat_label'];
         if (isset($_POST['edit_stat_index']) && $_POST['edit_stat_index'] !== '') {
-            $data['stats'][$_POST['edit_stat_index']] = ['icon' => $icon, 'number' => $number, 'label' => $label];
+            $id = $_POST['edit_stat_index'];
+            $stmt = $pdo->prepare("UPDATE stats SET icon=?, number=?, label=? WHERE id=?");
+            $stmt->execute([$icon, $number, $label, $id]);
         } else {
-            $data['stats'][] = ['icon' => $icon, 'number' => $number, 'label' => $label];
+            $stmt = $pdo->prepare("INSERT INTO stats (icon, number, label) VALUES (?, ?, ?)");
+            $stmt->execute([$icon, $number, $label]);
         }
     } elseif (isset($_POST['delete_stat'])) {
-        array_splice($data['stats'], $_POST['delete_stat'], 1);
+        $stmt = $pdo->prepare("DELETE FROM stats WHERE id=?");
+        $stmt->execute([$_POST['delete_stat']]);
     } elseif (isset($_POST['update_contact'])) {
-        $data['contact']['address'] = $_POST['contact_address'];
+        $address = $_POST['contact_address'];
+        $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('contact_address', ?)");
+        $stmt->execute([$address]);
     }
 
-    if (!isset($data['stats'])) {
-        $data['stats'] = [
-            ['icon' => '👥', 'number' => 85, 'label' => 'Active Clients'],
-            ['icon' => '📊', 'number' => 450, 'label' => 'Projects Done'],
-            ['icon' => '🌟', 'number' => 27, 'label' => 'Team Advisors'],
-            ['icon' => '🏆', 'number' => 15, 'label' => 'Glorious Years']
-        ];
-    }
-    if (!isset($data['contact'])) {
-        $data['contact'] = ['address' => 'No. 146/120D, Salmal Place, Mattegoda, Kottawa, Sri Lanka'];
-    }
-
-    file_put_contents($dataFile, json_encode($data, JSON_PRETTY_PRINT));
     header("Location: index.php");
     exit;
 }
@@ -173,15 +207,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th>Label</th>
                     <th>Action</th>
                 </tr>
-                <?php foreach ($data['stats'] ?? [] as $index => $stat): ?>
+                <?php foreach ($data['stats'] ?? [] as $stat): ?>
                 <tr>
                     <td><?= htmlspecialchars($stat['icon'] ?? '') ?></td>
                     <td><?= htmlspecialchars($stat['number'] ?? '') ?></td>
                     <td><?= htmlspecialchars($stat['label'] ?? '') ?></td>
                     <td>
-                        <button type="button" class="btn edit-stat-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $index ?>" data-icon="<?= htmlspecialchars($stat['icon'] ?? '') ?>" data-number="<?= htmlspecialchars($stat['number'] ?? '') ?>" data-label="<?= htmlspecialchars($stat['label'] ?? '') ?>">Edit</button>
+                        <button type="button" class="btn edit-stat-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $stat['id'] ?>" data-icon="<?= htmlspecialchars($stat['icon'] ?? '') ?>" data-number="<?= htmlspecialchars($stat['number'] ?? '') ?>" data-label="<?= htmlspecialchars($stat['label'] ?? '') ?>">Edit</button>
                         <form method="post" style="display:inline;">
-                            <button type="submit" name="delete_stat" value="<?= $index ?>" class="btn btn-danger">Delete</button>
+                            <button type="submit" name="delete_stat" value="<?= $stat['id'] ?>" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>
@@ -218,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th>Description</th>
                     <th>Action</th>
                 </tr>
-                <?php foreach ($data['services'] ?? [] as $index => $service): ?>
+                <?php foreach ($data['services'] ?? [] as $service): ?>
                 <tr>
                     <td><?= htmlspecialchars($service['icon'] ?? '') ?></td>
                     <td>
@@ -231,9 +265,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <td><?= htmlspecialchars($service['title'] ?? '') ?></td>
                     <td><?= htmlspecialchars($service['description'] ?? '') ?></td>
                     <td>
-                        <button type="button" class="btn edit-service-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $index ?>" data-icon="<?= htmlspecialchars($service['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($service['image'] ?? '') ?>" data-title="<?= htmlspecialchars($service['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($service['description'] ?? '') ?>">Edit</button>
+                        <button type="button" class="btn edit-service-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $service['id'] ?>" data-icon="<?= htmlspecialchars($service['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($service['image'] ?? '') ?>" data-title="<?= htmlspecialchars($service['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($service['description'] ?? '') ?>">Edit</button>
                         <form method="post" style="display:inline;">
-                            <button type="submit" name="delete_service" value="<?= $index ?>" class="btn btn-danger">Delete</button>
+                            <button type="submit" name="delete_service" value="<?= $service['id'] ?>" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>
@@ -278,7 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th>Description</th>
                     <th>Action</th>
                 </tr>
-                <?php foreach ($data['projects'] ?? [] as $index => $project): ?>
+                <?php foreach ($data['projects'] ?? [] as $project): ?>
                 <tr>
                     <td><?= htmlspecialchars($project['icon'] ?? '') ?></td>
                     <td>
@@ -291,9 +325,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <td><?= htmlspecialchars($project['title'] ?? '') ?></td>
                     <td><?= htmlspecialchars($project['description'] ?? '') ?></td>
                     <td>
-                        <button type="button" class="btn edit-project-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $index ?>" data-icon="<?= htmlspecialchars($project['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($project['image'] ?? '') ?>" data-title="<?= htmlspecialchars($project['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($project['description'] ?? '') ?>">Edit</button>
+                        <button type="button" class="btn edit-project-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $project['id'] ?>" data-icon="<?= htmlspecialchars($project['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($project['image'] ?? '') ?>" data-title="<?= htmlspecialchars($project['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($project['description'] ?? '') ?>">Edit</button>
                         <form method="post" style="display:inline;">
-                            <button type="submit" name="delete_project" value="<?= $index ?>" class="btn btn-danger">Delete</button>
+                            <button type="submit" name="delete_project" value="<?= $project['id'] ?>" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>
@@ -338,7 +372,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th>Content</th>
                     <th>Action</th>
                 </tr>
-                <?php foreach ($data['news'] ?? [] as $index => $news): ?>
+                <?php foreach ($data['news'] ?? [] as $news): ?>
                 <tr>
                     <td><?= htmlspecialchars($news['date'] ?? '') ?></td>
                     <td>
@@ -351,9 +385,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <td><?= htmlspecialchars($news['title'] ?? '') ?></td>
                     <td><?= htmlspecialchars($news['content'] ?? '') ?></td>
                     <td>
-                        <button type="button" class="btn edit-news-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $index ?>" data-date="<?= htmlspecialchars($news['date'] ?? '') ?>" data-image="<?= htmlspecialchars($news['image'] ?? '') ?>" data-title="<?= htmlspecialchars($news['title'] ?? '') ?>" data-content="<?= htmlspecialchars($news['content'] ?? '') ?>">Edit</button>
+                        <button type="button" class="btn edit-news-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $news['id'] ?>" data-date="<?= htmlspecialchars($news['date'] ?? '') ?>" data-image="<?= htmlspecialchars($news['image'] ?? '') ?>" data-title="<?= htmlspecialchars($news['title'] ?? '') ?>" data-content="<?= htmlspecialchars($news['content'] ?? '') ?>">Edit</button>
                         <form method="post" style="display:inline;">
-                            <button type="submit" name="delete_news" value="<?= $index ?>" class="btn btn-danger">Delete</button>
+                            <button type="submit" name="delete_news" value="<?= $news['id'] ?>" class="btn btn-danger">Delete</button>
                         </form>
                     </td>
                 </tr>
@@ -393,7 +427,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <form method="post">
                 <div class="form-group">
                     <label>Client Logo URLs (One external link per line, e.g., https://example.com/logo.png)</label>
-                    <textarea name="clients" required rows="6"><?= htmlspecialchars(implode("\n", $data['clients'] ?? [])) ?></textarea>
+                    <?php $clientUrls = array_column($data['clients'] ?? [], 'image_url'); ?>
+                    <textarea name="clients" required rows="6"><?= htmlspecialchars(implode("\n", $clientUrls)) ?></textarea>
                 </div>
                 <button type="submit" name="update_clients" class="btn">Update Clients</button>
             </form>

@@ -1,9 +1,24 @@
 <?php
-$dataFile = 'data/content.json';
+require_once 'config/database.php';
+
 $data = [];
-if (file_exists($dataFile)) {
-    $data = json_decode(file_get_contents($dataFile), true);
+
+// Fetch settings
+$stmt = $pdo->query("SELECT * FROM settings");
+while ($row = $stmt->fetch()) {
+    $data[$row['setting_key']] = $row['setting_value'];
 }
+$data['vision'] = $data['vision'] ?? '';
+$data['mission'] = $data['mission'] ?? '';
+$data['contact'] = ['address' => $data['contact_address'] ?? ''];
+
+// Fetch other tables
+$data['services'] = $pdo->query("SELECT * FROM services")->fetchAll();
+$data['projects'] = $pdo->query("SELECT * FROM projects")->fetchAll();
+$data['news'] = $pdo->query("SELECT * FROM news")->fetchAll();
+$data['clients'] = $pdo->query("SELECT * FROM clients")->fetchAll();
+$data['stats'] = $pdo->query("SELECT * FROM stats")->fetchAll();
+$data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
 ?>
 <?php include 'includes/header.php'; ?>
 
