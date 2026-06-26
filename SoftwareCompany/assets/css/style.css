@@ -53,6 +53,7 @@ html, body {
     height: 100%;
     display: block;
     touch-action: none;
+    opacity: 0.6;
 }
 
 .snap-container {
@@ -201,9 +202,9 @@ section {
     transform: translateY(20px);
 }
 .hero-title {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: clamp(32px, 7vw, 80px);
-    font-weight: 700;
+    font-weight: 500;
     line-height: 1.15;
     margin-bottom: 20px;
     overflow: hidden;
