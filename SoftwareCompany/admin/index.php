@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="admin-layout">
     <div class="admin-sidebar">
         <ul>
-            <li><a class="nav-link active" data-target="about-card">Vision & Mission</a></li>
+            <li><a class="nav-link active" data-target="about-card">About</a></li>
             <li><a class="nav-link" data-target="stats-card">Stats</a></li>
             <li><a class="nav-link" data-target="services-card">Services</a></li>
             <li><a class="nav-link" data-target="projects-card">Projects</a></li>
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- About Section -->
         <div class="admin-card active" id="about-card">
-            <h2>Vision & Mission</h2>
+            <h2>About</h2>
             <form method="post">
                 <div class="form-group">
                     <label>Vision</label>
@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label>Mission</label>
                     <textarea name="mission" required><?= htmlspecialchars($data['mission'] ?? '') ?></textarea>
                 </div>
-                <button type="submit" name="update_about" class="btn">Update Vision & Mission</button>
+                <button type="submit" name="update_about" class="btn">Update About</button>
             </form>
         </div>
 

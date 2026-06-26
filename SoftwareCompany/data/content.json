@@ -3,34 +3,49 @@
     "mission": "Empowering businesses with cutting-edge web and mobile applications, ensuring digital excellence and sustainable success.",
     "services": [
         {
-            "icon": "💻",
+            "icon": "\ud83d\udcbb",
             "title": "Web Development",
-            "description": "We specialize in creating dynamic and user friendly mobile responsive websites tailored to your specific needs."
+            "description": "We specialize in creating dynamic and user friendly mobile responsivewebsites tailored to your specific needs."
         },
         {
-            "icon": "📱",
+            "icon": "\ud83d\udcf1",
             "title": "Mobile App Development",
-            "description": "Our team excels in developing cutting-edge mobile applications for various platforms."
+            "description": "Our team excels in developing cutting-edge mobile applications for various platforms, helping you reach your audience wherever they are."
         },
         {
-            "icon": "🔬",
+            "icon": "\ud83d\udd2c",
             "title": "IT Base Research",
-            "description": "We provide IT base research services, offering valuable insights and analysis."
+            "description": "We provide IT base research services, offering valuable insights and analysis to drive informed decision making for your business."
+        },
+        {
+            "icon": "\ud83d\udcc8",
+            "title": "Digital Marketing",
+            "description": "Our strategic digital marketing solutions help enhance your online presence, attract targeted traffic, and maximize conversions."
+        },
+        {
+            "icon": "\ud83d\uded2",
+            "title": "E-commerce Solutions",
+            "description": "Maximize your online sales potential with our scalable e-commerce solutions. Whether you're a small business or a large enterprise."
+        },
+        {
+            "icon": "\ud83d\udee1\ufe0f",
+            "title": "IT Auditing Services",
+            "description": "Our IT auditing services are help you identify risks, strengthen controls, and optimize your IT infrastructure for maximum efficiency and security."
         }
     ],
     "projects": [
         {
-            "icon": "🛒",
+            "icon": "\ud83d\uded2",
             "title": "E-Commerce System",
             "description": "Custom web designs and integrated e-commerce solutions crafted to drive online engagement and sales."
         },
         {
-            "icon": "🏥",
+            "icon": "\ud83c\udfe5",
             "title": "Medi Lab Diagnostic Portal",
             "description": "Our custom-built Medi Lab platform designed for laboratory diagnostics, patient record management, and clinical workflows."
         },
         {
-            "icon": "💳",
+            "icon": "\ud83d\udcb3",
             "title": "POS Sri Lanka Management",
             "description": "A robust POS Sri Lanka retail system with offline caching and live inventory sync, deployed for stores and cafes across Sri Lanka."
         }
@@ -48,9 +63,43 @@
         }
     ],
     "clients": [
-        "assets/images/logo-placeholder.png",
-        "assets/images/logo-placeholder.png",
-        "assets/images/logo-placeholder.png",
-        "assets/images/logo-placeholder.png"
-    ]
+        "https:\/\/upload.wikimedia.org\/wikipedia\/commons\/2\/2f\/Google_2015_logo.svg",
+        "https:\/\/upload.wikimedia.org\/wikipedia\/commons\/a\/a9\/Amazon_logo.svg",
+        "https:\/\/upload.wikimedia.org\/wikipedia\/commons\/4\/44\/Microsoft_logo.svg",
+        "https:\/\/upload.wikimedia.org\/wikipedia\/commons\/0\/08\/Cisco_logo_blue_2016.svg",
+        "https:\/\/upload.wikimedia.org\/wikipedia\/commons\/2\/24\/Samsung_Logo.svg",
+        "https:\/\/upload.wikimedia.org\/wikipedia\/commons\/5\/51\/IBM_logo.svg"
+    ],
+    "faq": [
+        {
+            "question": "What services does FishiFox offer?",
+            "answer": "FishiFox specializes in full-scale web development, custom mobile applications (iOS and Android), IT base audits\/research, and digital marketing strategies."
+        },
+        {
+            "question": "How long does a typical web development project take?",
+            "answer": "Project timelines vary depending on complexity. A standard corporate website might take 4-6 weeks, while a complex e-commerce platform could take 3-4 months. We provide a detailed timeline during the proposal phase."
+        },
+        {
+            "question": "Do you provide ongoing support and maintenance?",
+            "answer": "Absolutely! We offer various maintenance packages to keep your website or application secure, updated, and performing optimally after launch."
+        },
+        {
+            "question": "What technologies do you specialize in?",
+            "answer": "We work with modern, robust tech stacks including React, Node.js, PHP\/Laravel, Flutter for mobile, and various robust database technologies to ensure scalable solutions."
+        },
+        {
+            "question": "Can you help improve our search engine ranking?",
+            "answer": "Yes, our digital marketing and SEO services are designed to improve your online visibility. We optimize both the technical structure of your site and help with content strategies to drive organic traffic."
+        }
+    ],
+    "stats": [
+        {
+            "icon": ":)",
+            "number": "50",
+            "label": "hello"
+        }
+    ],
+    "contact": {
+        "address": "No. 146\/120D, Salmal Place, Mattegoda, Kottawa, Sri Lanka"
+    }
 }

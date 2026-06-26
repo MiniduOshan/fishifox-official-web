@@ -70,30 +70,37 @@ if (file_exists($dataFile)) {
 
 
 <!-- Vision & Mission Section -->
-<section class="about-section" id="about" style="padding: 5rem 0; text-align: center;">
-    <div class="section-header reveal">
-        <p class="section-label">About Us</p>
-        <h2 class="section-title">Vision & Mission</h2>
-    </div>
-    <div class="reveal" style="max-width: 800px; margin: 0 auto; padding: 2rem;">
-        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-color);">Our Vision</h3>
-        <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem;"><?= htmlspecialchars($data['vision'] ?? '') ?></p>
-        
-        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent-color);">Our Mission</h3>
-        <p style="font-size: 1.1rem; line-height: 1.6;"><?= htmlspecialchars($data['mission'] ?? '') ?></p>
+<section class="about-section parallax-section" id="about" style="text-align: center;">
+    <div class="parallax-bg-image" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070');"></div>
+    <div class="parallax-overlay"></div>
+    <div class="parallax-content">
+        <div class="section-header reveal">
+            <p class="section-label" style="color: var(--primary-gold);">About Us</p>
+            <h2 class="section-title" style="color: white;">Vision & Mission</h2>
+        </div>
+        <div class="reveal glass-panel" style="max-width: 800px; margin: 0 auto; padding: 3rem; border-radius: 24px;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary-light);">Our Vision</h3>
+            <p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; color: #e2e8f0;"><?= htmlspecialchars($data['vision'] ?? '') ?></p>
+            
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary-light);">Our Mission</h3>
+            <p style="font-size: 1.1rem; line-height: 1.6; color: #e2e8f0;"><?= htmlspecialchars($data['mission'] ?? '') ?></p>
+        </div>
     </div>
 </section>
 
 
 
 <!-- Portfolio Section -->
-<section class="portfolio-section" id="portfolio">
-    <div class="section-header reveal">
-        <p class="section-label">Our Work</p>
-        <h2 class="section-title">Case Studies & Projects</h2>
-    </div>
-    <div class="portfolio-grid">
-        <?php if(!empty($data['projects'])): ?>
+<section class="portfolio-section" id="portfolio" style="padding-top: 100px; padding-bottom: 100px;">
+    <div class="portfolio-layout-wrapper">
+        <div class="portfolio-header-side reveal">
+            <p class="section-label">Our Work</p>
+            <h2 class="section-title" style="margin-bottom: 20px; text-align: left;">Case Studies & Projects</h2>
+            <p class="section-desc" style="text-align: left; line-height: 1.6;">Explore some of our finest deliveries. We design robust digital experiences tailored to elevate brands and engage users.</p>
+        </div>
+        
+        <div class="portfolio-grid-side">
+            <?php if(!empty($data['projects'])): ?>
             <?php foreach($data['projects'] as $project): ?>
             <div class="portfolio-card reveal">
                 <?php if(!empty($project['image'])): ?>
@@ -111,68 +118,44 @@ if (file_exists($dataFile)) {
         <?php else: ?>
             <p>No projects available.</p>
         <?php endif; ?>
+        </div>
     </div>
 </section>
 
-<!-- News Section -->
-<section class="news-section" id="news" style="padding: 5rem 0; background-color: var(--bg-secondary);">
-    <div class="section-header reveal">
-        <p class="section-label">Latest Updates</p>
-        <h2 class="section-title">News & Announcements</h2>
-    </div>
-    <div class="news-grid reveal" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
-        <?php if(!empty($data['news'])): ?>
-            <?php foreach($data['news'] as $news): ?>
-            <div class="news-card" style="background: var(--bg-primary); padding: 2rem; border-radius: 12px; width: 300px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
-                <?php if(!empty($news['image'])): ?>
-                    <img src="<?= htmlspecialchars($news['image']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
-                <?php endif; ?>
-                <span class="news-date" style="color: var(--accent-color); font-size: 0.9rem; font-weight: bold;"><?= htmlspecialchars($news['date']) ?></span>
-                <h3 class="news-title" style="margin: 1rem 0; font-size: 1.25rem;"><?= htmlspecialchars($news['title']) ?></h3>
-                <p class="news-desc" style="color: var(--text-secondary); flex: 1;"><?= htmlspecialchars($news['content']) ?></p>
-            </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No news available.</p>
-        <?php endif; ?>
-    </div>
-</section>
+
 
 <!-- Clients Section -->
-<section class="clients-section" id="clients" style="padding: 5rem 0;">
+<section class="clients-section" id="clients" style="overflow: hidden; padding-bottom: 60px;">
     <div class="section-header reveal">
         <p class="section-label">Trusted By</p>
         <h2 class="section-title">Our Clientele</h2>
     </div>
-    <div class="clients-grid reveal" style="display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap; max-width: 1000px; margin: 3rem auto; padding: 0 2rem;">
-        <?php if(!empty($data['clients'])): ?>
-            <?php foreach($data['clients'] as $clientLogo): ?>
-                <img src="<?= htmlspecialchars($clientLogo) ?>" alt="Client Logo" style="max-height: 80px; filter: grayscale(100%); opacity: 0.7; transition: all 0.3s ease;" onmouseover="this.style.filter='none'; this.style.opacity='1'" onmouseout="this.style.filter='grayscale(100%)'; this.style.opacity='0.7'">
+    
+    <?php 
+    // Real-world sample logos for demonstration
+    $clientLogos = !empty($data['clients']) ? $data['clients'] : [
+        'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
+        'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+        'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
+        'https://upload.wikimedia.org/wikipedia/commons/0/08/Cisco_logo_blue_2016.svg',
+        'https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg',
+        'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg'
+    ];
+    ?>
+    <div class="clients-marquee-wrapper reveal">
+        <div class="clients-marquee-track">
+            <?php foreach($clientLogos as $logo): ?>
+                <img src="<?= htmlspecialchars($logo) ?>" alt="Client Logo">
             <?php endforeach; ?>
-        <?php else: ?>
-            <p>No clients listed.</p>
-        <?php endif; ?>
-    </div>
-</section>
-
-<!-- Accordion Hub Module -->
-<section class="faq-section" id="faq">
-    <div class="section-header reveal">
-        <p class="section-label">FAQ</p>
-        <h2 class="section-title">Frequently Asked Questions</h2>
-    </div>
-    <div class="faq-container reveal">
-        <div class="faq-item">
-            <div class="faq-header">
-                <span class="faq-question">What services does FishiFox offer?</span>
-                <div class="faq-icon-wrapper">▼</div>
-            </div>
-            <div class="faq-content">
-                <p>FishiFox specializes in full-scale web development, custom mobile applications (iOS and Android), IT base audits/research, and digital marketing strategies.</p>
-            </div>
+            <!-- Duplicated for seamless infinite looping -->
+            <?php foreach($clientLogos as $logo): ?>
+                <img src="<?= htmlspecialchars($logo) ?>" alt="Client Logo">
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
+
+
 
 <!-- Contact Section -->
 <section class="contact-section" id="contact">
@@ -182,12 +165,28 @@ if (file_exists($dataFile)) {
     </div>
     <div class="contact-container reveal">
         <div class="contact-info-panel">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin-bottom: 5px;">Contact Information</h3>
+            <p style="color: var(--text-secondary); font-size: 15px;">Feel free to reach out to us with any questions or project inquiries. We would love to hear from you!</p>
             <div class="contact-details">
                 <div class="contact-detail-item">
                     <div class="contact-detail-icon">📍</div>
                     <div class="contact-detail-text">
                         <h5>Headquarters</h5>
-                        <p><?= htmlspecialchars($data['contact']['address'] ?? 'No. 146/120D, Salmal Place, Mattegoda, Kottawa, Sri Lanka') ?></p>
+                        <p><?= htmlspecialchars($data['contact']['address'] ?? 'No146/120D, Salmal Place, Mattegoda, Kottawa, Sri Lanka') ?></p>
+                    </div>
+                </div>
+                <div class="contact-detail-item">
+                    <div class="contact-detail-icon">📞</div>
+                    <div class="contact-detail-text">
+                        <h5>Phone</h5>
+                        <p><?= htmlspecialchars($data['contact']['phone'] ?? '+94 777 615 169') ?></p>
+                    </div>
+                </div>
+                <div class="contact-detail-item">
+                    <div class="contact-detail-icon">✉️</div>
+                    <div class="contact-detail-text">
+                        <h5>Email</h5>
+                        <p><a href="mailto:info@fishifox.com" style="color: inherit; text-decoration: none;"><?= htmlspecialchars($data['contact']['email'] ?? 'info@fishifox.com') ?></a></p>
                     </div>
                 </div>
             </div>
@@ -197,6 +196,7 @@ if (file_exists($dataFile)) {
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        // Hero Parallax Setup
         gsap.to('.hero-subtitle', { opacity: 1, y: 0, duration: 0.7, delay: 0.12 });
         document.querySelectorAll('.hero-title .line').forEach((line, index) => {
             const text = line.textContent.trim(); line.innerHTML = '';
@@ -211,6 +211,11 @@ if (file_exists($dataFile)) {
         gsap.to('.hero-cta', { opacity: 1, y: 0, duration: 0.7, delay: 0.5 });
         gsap.to('.scroll-indicator', { opacity: 1, duration: 0.7, delay: 0.62 });
 
+
+
+
+
+        // Stats Counter Effect
         document.querySelectorAll('.stat-number').forEach(stat => {
             const target = parseInt(stat.getAttribute('data-target'));
             ScrollTrigger.create({

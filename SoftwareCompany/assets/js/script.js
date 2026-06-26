@@ -25,4 +25,25 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     });
+
+    // Navbar scroll listener
+    const nav = document.querySelector('.nav');
+    if (nav) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+        // Set initial state
+        if (window.scrollY > 50) nav.classList.add('scrolled');
+    }
+
+    // Scroll progress bar
+    const scrollProgress = document.querySelector('.scroll-progress');
+    if (scrollProgress) {
+        window.addEventListener('scroll', () => {
+            const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const percentage = totalScroll > 0 ? (window.scrollY / totalScroll) * 100 : 0;
+            scrollProgress.style.width = `${percentage}%`;
+        });
+    }
 });

@@ -2,9 +2,9 @@
 
     <style>
         .footer {
-            background-color: var(--bg-secondary);
+            background-color: var(--footer-bg);
             padding: 4rem 2rem 2rem;
-            color: var(--text-primary);
+            color: #f8fafc;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
         .footer-container {
@@ -33,7 +33,7 @@
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             font-size: 24px;
-            color: var(--text-primary);
+            color: #f8fafc;
             letter-spacing: 1px;
         }
         .footer-links {
@@ -54,7 +54,7 @@
             margin-bottom: 0.5rem;
         }
         .footer-links a {
-            color: var(--text-secondary);
+            color: #94a3b8;
             text-decoration: none;
             transition: color 0.3s;
         }
@@ -75,7 +75,7 @@
             gap: 1rem;
         }
         .social-icons a {
-            color: var(--text-secondary);
+            color: #94a3b8;
             font-size: 1.5rem;
             text-decoration: none;
             transition: transform 0.3s, color 0.3s;
@@ -90,7 +90,7 @@
             padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
-            color: var(--text-secondary);
+            color: #94a3b8;
             font-size: 0.9rem;
         }
     </style>
@@ -102,7 +102,7 @@
                     <img src="assets/images/logo.png" alt="FishiFox Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <span style="display:none;">FishiFox</span>
                 </a>
-                <p style="color: var(--text-secondary); line-height: 1.6;">
+                <p style="color: #94a3b8; line-height: 1.6;">
                     Your premier IT solutions provider in Sri Lanka. Diving to an unexpected depth to bring you digital excellence.
                 </p>
             </div>
@@ -134,7 +134,6 @@
 
     <!-- Execution Module Pipelines -->
     <script src="assets/js/theme.js"></script>
-    <script src="assets/js/scroll.js"></script>
     <script src="assets/js/parallax.js"></script>
     <script src="assets/js/script.js"></script>
     <script src="assets/js/fluid.js"></script>
