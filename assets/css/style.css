@@ -176,6 +176,7 @@ section {
 }
 .portfolio-layout-wrapper {
     display: flex;
+    width: 100%;
     max-width: 1300px;
     margin: 0 auto;
     gap: 60px;
@@ -206,6 +207,7 @@ section {
     .portfolio-layout-wrapper {
         flex-direction: column;
         gap: 40px;
+        align-items: stretch;
     }
     .portfolio-header-side {
         flex: 1;
@@ -215,6 +217,8 @@ section {
         overflow-x: auto;
         padding-bottom: 20px;
         scroll-snap-type: x mandatory;
+        width: 100%;
+        max-width: 100%;
     }
     .portfolio-grid-side {
         width: max-content;
@@ -243,6 +247,8 @@ section {
     font-weight: 600;
     margin-bottom: 16px;
     color: var(--text-primary);
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 .section-desc {
     font-size: 16px;
