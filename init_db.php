@@ -1,4 +1,7 @@
 <?php
+if (php_sapi_name() !== 'cli' && (!isset($_GET['token']) || $_GET['token'] !== 'init123')) {
+    die("Unauthorized access to database initialization. Provide ?token=init123 parameter.");
+}
 $host = '127.0.0.1';
 $username = 'root';
 $password = '';

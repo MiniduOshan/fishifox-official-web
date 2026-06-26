@@ -32,6 +32,10 @@ $data['stats'] = $pdo->query("SELECT * FROM stats")->fetchAll();
 $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Sanitize all POST inputs
+    array_walk_recursive($_POST, function(&$value) {
+        $value = htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
+    });
     if (isset($_POST['update_about'])) {
         $vision = $_POST['vision'];
         $mission = $_POST['mission'];
