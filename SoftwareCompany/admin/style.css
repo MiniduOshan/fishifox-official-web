@@ -1,0 +1,238 @@
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f8fafc;
+    color: #334155;
+    margin: 0;
+    padding: 0;
+    font-size: 14px; /* Smaller text */
+    line-height: 1.5;
+}
+
+.admin-header {
+    background-color: #ffffff;
+    color: #0f172a;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.admin-header h1 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.admin-header a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.admin-header a:hover {
+    background-color: #f1f5f9;
+}
+
+.admin-layout {
+    display: flex;
+    margin-top: 55px; /* Offset for header */
+    min-height: calc(100vh - 55px);
+}
+
+.admin-sidebar {
+    width: 220px;
+    background-color: #0f172a; /* Dark slate */
+    padding: 1.5rem 0;
+    position: fixed;
+    top: 55px;
+    bottom: 0;
+    left: 0;
+    border-right: none;
+}
+
+.admin-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-sidebar li a {
+    display: block;
+    color: #94a3b8;
+    text-decoration: none;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.admin-sidebar li a:hover {
+    background-color: #1e293b;
+    color: #f8fafc;
+}
+
+.admin-sidebar li a.active {
+    background-color: #1e293b;
+    color: #38bdf8;
+    border-left-color: #38bdf8;
+}
+
+.admin-container {
+    flex: 1;
+    margin-left: 220px; /* Offset for sidebar */
+    padding: 2rem;
+    max-width: 900px;
+}
+
+.admin-card {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+    display: none;
+}
+
+.admin-card.active {
+    display: block;
+}
+
+.admin-card h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.admin-card h3 {
+    font-size: 1rem;
+    color: #334155;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="date"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    color: #0f172a;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group input[type="file"] {
+    font-size: 0.875rem;
+    padding: 0.25rem 0;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.btn {
+    background-color: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    display: inline-block;
+}
+
+.btn:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+/* Edit button specific */
+button.edit-product-btn, button.edit-news-btn {
+    background-color: #f59e0b;
+}
+
+button.edit-product-btn:hover, button.edit-news-btn:hover {
+    background-color: #d97706;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+}
+
+table th, table td {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+table img {
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+}

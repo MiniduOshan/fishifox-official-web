@@ -1,6 +1,5 @@
 <?php
-// Identify current path location logic to append an .active layout class natively
-$currentPage = basename($_SERVER['SCRIPT_NAME']);
+// Since it's a single page layout, we don't need active page logic based on SCRIPT_NAME
 ?>
 <nav class="nav">
     <a href="index.php" class="logo">
@@ -8,13 +7,13 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
         <span class="logo-text" style="display:none; font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:24px; color:var(--text-primary); letter-spacing:1px;">FishiFox</span>
     </a>
     <ul class="nav-links">
-        <li><a href="services.php" class="<?php echo ($currentPage == 'services.php') ? 'active' : ''; ?>">Services</a></li>
-        <li><a href="index.php#tools" class="<?php echo ($currentPage == 'index.php') ? 'active' : ''; ?>">Tools</a></li>
-        <li><a href="portfolio.php" class="<?php echo ($currentPage == 'portfolio.php') ? 'active' : ''; ?>">Portfolio</a></li>
-        <li><a href="about.php" class="<?php echo ($currentPage == 'about.php') ? 'active' : ''; ?>">Process</a></li>
-        <li><a href="about.php#clients" class="">Clients</a></li>
-        <li><a href="index.php#faq" class="">FAQ</a></li>
-        <li><a href="contact.php" class="<?php echo ($currentPage == 'contact.php') ? 'active' : ''; ?>">Contact</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="#clients">Clients</a></li>
+        <li><a href="#faq">FAQ</a></li>
     </ul>
-    <a href="contact.php" class="nav-cta">Get Started</a>
+    <a href="#contact" class="nav-cta">Get Started</a>
 </nav>

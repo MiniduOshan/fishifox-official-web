@@ -1,0 +1,56 @@
+{
+    "vision": "To be the leading innovator in digital solutions, driving business growth through technology.",
+    "mission": "Empowering businesses with cutting-edge web and mobile applications, ensuring digital excellence and sustainable success.",
+    "services": [
+        {
+            "icon": "💻",
+            "title": "Web Development",
+            "description": "We specialize in creating dynamic and user friendly mobile responsive websites tailored to your specific needs."
+        },
+        {
+            "icon": "📱",
+            "title": "Mobile App Development",
+            "description": "Our team excels in developing cutting-edge mobile applications for various platforms."
+        },
+        {
+            "icon": "🔬",
+            "title": "IT Base Research",
+            "description": "We provide IT base research services, offering valuable insights and analysis."
+        }
+    ],
+    "projects": [
+        {
+            "icon": "🛒",
+            "title": "E-Commerce System",
+            "description": "Custom web designs and integrated e-commerce solutions crafted to drive online engagement and sales."
+        },
+        {
+            "icon": "🏥",
+            "title": "Medi Lab Diagnostic Portal",
+            "description": "Our custom-built Medi Lab platform designed for laboratory diagnostics, patient record management, and clinical workflows."
+        },
+        {
+            "icon": "💳",
+            "title": "POS Sri Lanka Management",
+            "description": "A robust POS Sri Lanka retail system with offline caching and live inventory sync, deployed for stores and cafes across Sri Lanka."
+        }
+    ],
+    "news": [
+        {
+            "date": "2026-06-20",
+            "title": "FishiFox Launches New POS System",
+            "content": "We are thrilled to announce the launch of our new POS system tailored for Sri Lankan businesses."
+        },
+        {
+            "date": "2026-06-15",
+            "title": "Partnering with GlobalTech",
+            "content": "FishiFox has officially partnered with GlobalTech to deliver worldwide IT solutions."
+        }
+    ],
+    "clients": [
+        "assets/images/logo-placeholder.png",
+        "assets/images/logo-placeholder.png",
+        "assets/images/logo-placeholder.png",
+        "assets/images/logo-placeholder.png"
+    ]
+}
