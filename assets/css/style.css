@@ -190,7 +190,15 @@ section {
 .portfolio-grid-mask {
     flex: 1;
     min-width: 0;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+}
+.portfolio-grid-mask::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
 }
 .portfolio-grid-side {
     display: flex;
@@ -200,8 +208,9 @@ section {
     /* GSAP will handle the translation */
 }
 .portfolio-grid-side .portfolio-card {
-    flex: 0 0 330px; /* Fixed width for smooth GSAP horizontal translation */
+    flex: 0 0 330px; /* Fixed width for smooth horizontal translation */
     max-width: 85vw; /* Ensure it fits on smaller screens */
+    scroll-snap-align: start;
 }
 @media (max-width: 1024px) {
     .portfolio-layout-wrapper {
