@@ -9,3 +9,6 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.*)$ $1.php [L]
+
+# Force lookups for sitemap.xml to be parsed securely via the dynamic PHP script pipeline
+RewriteRule ^sitemap\.xml$ sitemap.php [L]

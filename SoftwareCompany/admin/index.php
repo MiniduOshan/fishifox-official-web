@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    header('Location: login');
+    exit;
+}
 require_once '../config/database.php';
 
 // Fetch all data for display
@@ -12,7 +17,11 @@ while ($row = $stmt->fetch()) {
 // Set fallbacks for settings
 $data['vision'] = $data['vision'] ?? '';
 $data['mission'] = $data['mission'] ?? '';
-$data['contact'] = ['address' => $data['contact_address'] ?? ''];
+$data['contact'] = [
+    'address' => $data['contact_address'] ?? '',
+    'tp' => $data['contact_tp'] ?? '',
+    'email' => $data['contact_email'] ?? ''
+];
 
 // Fetch other tables
 $data['services'] = $pdo->query("SELECT * FROM services")->fetchAll();
@@ -143,8 +152,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$_POST['delete_stat']]);
     } elseif (isset($_POST['update_contact'])) {
         $address = $_POST['contact_address'];
-        $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('contact_address', ?)");
-        $stmt->execute([$address]);
+        $tp = $_POST['contact_tp'];
+        $email = $_POST['contact_email'];
+        $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('contact_address', ?), ('contact_tp', ?), ('contact_email', ?)");
+        $stmt->execute([$address, $tp, $email]);
     }
 
     header("Location: index.php");
@@ -163,7 +174,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="admin-header">
     <h1>FishiFox Admin Dashboard</h1>
-    <a href="../index.php" target="_blank">View Website</a>
+    <div>
+        <a href="../index.php" target="_blank" style="margin-right: 15px; color: black;">View Website</a>
+        <a href="logout.php" style="background: #e74c3c; padding: 5px 10px; color: white; text-decoration: none; border-radius: 4px;">Logout</a>
+    </div>
 </div>
 
 <div class="admin-layout">
@@ -200,225 +214,249 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Stats Section -->
         <div class="admin-card" id="stats-card">
             <h2>Stats (Counters)</h2>
-            <table>
-                <tr>
-                    <th>Icon</th>
-                    <th>Target Number</th>
-                    <th>Label</th>
-                    <th>Action</th>
-                </tr>
-                <?php foreach ($data['stats'] ?? [] as $stat): ?>
-                <tr>
-                    <td><?= htmlspecialchars($stat['icon'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($stat['number'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($stat['label'] ?? '') ?></td>
-                    <td>
-                        <button type="button" class="btn edit-stat-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $stat['id'] ?>" data-icon="<?= htmlspecialchars($stat['icon'] ?? '') ?>" data-number="<?= htmlspecialchars($stat['number'] ?? '') ?>" data-label="<?= htmlspecialchars($stat['label'] ?? '') ?>">Edit</button>
-                        <form method="post" style="display:inline;">
-                            <button type="submit" name="delete_stat" value="<?= $stat['id'] ?>" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-            <h3 id="stat-form-title">Add New Stat</h3>
-            <form method="post" id="stat-form">
-                <input type="hidden" name="edit_stat_index" id="edit_stat_index" value="">
-                <div class="form-group">
-                    <label>Icon (Emoji)</label>
-                    <input type="text" name="stat_icon" id="stat_icon" required>
+            <div class="split-layout">
+                <div class="form-section">
+                    <h3 id="stat-form-title" style="margin-top: 0;">Add New Stat</h3>
+                    <form method="post" id="stat-form">
+                        <input type="hidden" name="edit_stat_index" id="edit_stat_index" value="">
+                        <div class="form-group">
+                            <label>Icon (Emoji)</label>
+                            <input type="text" name="stat_icon" id="stat_icon" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Number (Target)</label>
+                            <input type="number" name="stat_number" id="stat_number" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="stat_label" id="stat_label" required>
+                        </div>
+                        <button type="submit" name="save_stat" id="stat-submit-btn" class="btn">Add Stat</button>
+                        <button type="button" id="stat-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label>Number (Target)</label>
-                    <input type="number" name="stat_number" id="stat_number" required>
+                <div class="table-section">
+                    <table>
+                        <tr>
+                            <th>Icon</th>
+                            <th>Target Number</th>
+                            <th>Label</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($data['stats'] ?? [] as $stat): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($stat['icon'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($stat['number'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($stat['label'] ?? '') ?></td>
+                            <td>
+                                <button type="button" class="btn edit-stat-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $stat['id'] ?>" data-icon="<?= htmlspecialchars($stat['icon'] ?? '') ?>" data-number="<?= htmlspecialchars($stat['number'] ?? '') ?>" data-label="<?= htmlspecialchars($stat['label'] ?? '') ?>">Edit</button>
+                                <form method="post" style="display:inline;">
+                                    <button type="submit" name="delete_stat" value="<?= $stat['id'] ?>" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label>Label</label>
-                    <input type="text" name="stat_label" id="stat_label" required>
-                </div>
-                <button type="submit" name="save_stat" id="stat-submit-btn" class="btn">Add Stat</button>
-                <button type="button" id="stat-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
-            </form>
+            </div>
         </div>
 
         <!-- Services Section -->
         <div class="admin-card" id="services-card">
             <h2>Services</h2>
-            <table>
-                <tr>
-                    <th>Icon</th>
-                    <th>Image URL</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Action</th>
-                </tr>
-                <?php foreach ($data['services'] ?? [] as $service): ?>
-                <tr>
-                    <td><?= htmlspecialchars($service['icon'] ?? '') ?></td>
-                    <td>
-                        <?php if(!empty($service['image'])): ?>
-                            <img src="<?= htmlspecialchars($service['image']) ?>" alt="Preview" style="max-width: 50px; max-height: 50px;">
-                        <?php else: ?>
-                            None
-                        <?php endif; ?>
-                    </td>
-                    <td><?= htmlspecialchars($service['title'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($service['description'] ?? '') ?></td>
-                    <td>
-                        <button type="button" class="btn edit-service-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $service['id'] ?>" data-icon="<?= htmlspecialchars($service['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($service['image'] ?? '') ?>" data-title="<?= htmlspecialchars($service['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($service['description'] ?? '') ?>">Edit</button>
-                        <form method="post" style="display:inline;">
-                            <button type="submit" name="delete_service" value="<?= $service['id'] ?>" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-            <h3 id="service-form-title">Add New Service</h3>
-            <form method="post" enctype="multipart/form-data" id="service-form">
-                <input type="hidden" name="edit_service_index" id="edit_service_index" value="">
-                <div class="form-group">
-                    <label>Icon (Emoji or Text - Optional)</label>
-                    <input type="text" name="service_icon" id="service_icon">
+            <div class="split-layout">
+                <div class="form-section">
+                    <h3 id="service-form-title" style="margin-top: 0;">Add New Service</h3>
+                    <form method="post" enctype="multipart/form-data" id="service-form">
+                        <input type="hidden" name="edit_service_index" id="edit_service_index" value="">
+                        <div class="form-group">
+                            <label>Icon (Emoji or Text - Optional)</label>
+                            <input type="text" name="service_icon" id="service_icon">
+                        </div>
+                        <div class="form-group">
+                            <label>Image Upload (Local file - Optional)</label>
+                            <input type="file" name="service_image_file" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label>OR Image URL (External link - Optional)</label>
+                            <input type="url" name="service_image" id="service_image" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="service_title" id="service_title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="service_desc" id="service_desc" required></textarea>
+                        </div>
+                        <button type="submit" name="save_service" id="service-submit-btn" class="btn">Add Service</button>
+                        <button type="button" id="service-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label>Image Upload (Local file - Optional)</label>
-                    <input type="file" name="service_image_file" accept="image/*">
+                <div class="table-section">
+                    <table>
+                        <tr>
+                            <th>Icon</th>
+                            <th>Image URL</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($data['services'] ?? [] as $service): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($service['icon'] ?? '') ?></td>
+                            <td>
+                                <?php if(!empty($service['image'])): ?>
+                                    <img src="<?= htmlspecialchars($service['image']) ?>" alt="Preview" style="max-width: 50px; max-height: 50px;">
+                                <?php else: ?>
+                                    None
+                                <?php endif; ?>
+                            </td>
+                            <td><?= htmlspecialchars($service['title'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($service['description'] ?? '') ?></td>
+                            <td>
+                                <button type="button" class="btn edit-service-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $service['id'] ?>" data-icon="<?= htmlspecialchars($service['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($service['image'] ?? '') ?>" data-title="<?= htmlspecialchars($service['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($service['description'] ?? '') ?>">Edit</button>
+                                <form method="post" style="display:inline;">
+                                    <button type="submit" name="delete_service" value="<?= $service['id'] ?>" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label>OR Image URL (External link - Optional)</label>
-                    <input type="url" name="service_image" id="service_image" placeholder="https://example.com/image.jpg">
-                </div>
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" name="service_title" id="service_title" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea name="service_desc" id="service_desc" required></textarea>
-                </div>
-                <button type="submit" name="save_service" id="service-submit-btn" class="btn">Add Service</button>
-                <button type="button" id="service-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
-            </form>
+            </div>
         </div>
 
         <!-- Projects Section -->
         <div class="admin-card" id="projects-card">
             <h2>Projects (Portfolio)</h2>
-            <table>
-                <tr>
-                    <th>Icon</th>
-                    <th>Image URL</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Action</th>
-                </tr>
-                <?php foreach ($data['projects'] ?? [] as $project): ?>
-                <tr>
-                    <td><?= htmlspecialchars($project['icon'] ?? '') ?></td>
-                    <td>
-                        <?php if(!empty($project['image'])): ?>
-                            <img src="<?= htmlspecialchars($project['image']) ?>" alt="Preview" style="max-width: 50px; max-height: 50px;">
-                        <?php else: ?>
-                            None
-                        <?php endif; ?>
-                    </td>
-                    <td><?= htmlspecialchars($project['title'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($project['description'] ?? '') ?></td>
-                    <td>
-                        <button type="button" class="btn edit-project-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $project['id'] ?>" data-icon="<?= htmlspecialchars($project['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($project['image'] ?? '') ?>" data-title="<?= htmlspecialchars($project['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($project['description'] ?? '') ?>">Edit</button>
-                        <form method="post" style="display:inline;">
-                            <button type="submit" name="delete_project" value="<?= $project['id'] ?>" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-            <h3 id="project-form-title">Add New Project</h3>
-            <form method="post" enctype="multipart/form-data" id="project-form">
-                <input type="hidden" name="edit_project_index" id="edit_project_index" value="">
-                <div class="form-group">
-                    <label>Icon (Emoji or Text - Optional)</label>
-                    <input type="text" name="project_icon" id="project_icon">
+            <div class="split-layout">
+                <div class="form-section">
+                    <h3 id="project-form-title" style="margin-top: 0;">Add New Project</h3>
+                    <form method="post" enctype="multipart/form-data" id="project-form">
+                        <input type="hidden" name="edit_project_index" id="edit_project_index" value="">
+                        <div class="form-group">
+                            <label>Icon (Emoji or Text - Optional)</label>
+                            <input type="text" name="project_icon" id="project_icon">
+                        </div>
+                        <div class="form-group">
+                            <label>Image Upload (Local file - Optional)</label>
+                            <input type="file" name="project_image_file" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label>OR Image URL (External link - Optional)</label>
+                            <input type="url" name="project_image" id="project_image" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="project_title" id="project_title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="project_desc" id="project_desc" required></textarea>
+                        </div>
+                        <button type="submit" name="save_project" id="project-submit-btn" class="btn">Add Project</button>
+                        <button type="button" id="project-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label>Image Upload (Local file - Optional)</label>
-                    <input type="file" name="project_image_file" accept="image/*">
+                <div class="table-section">
+                    <table>
+                        <tr>
+                            <th>Icon</th>
+                            <th>Image URL</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($data['projects'] ?? [] as $project): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($project['icon'] ?? '') ?></td>
+                            <td>
+                                <?php if(!empty($project['image'])): ?>
+                                    <img src="<?= htmlspecialchars($project['image']) ?>" alt="Preview" style="max-width: 50px; max-height: 50px;">
+                                <?php else: ?>
+                                    None
+                                <?php endif; ?>
+                            </td>
+                            <td><?= htmlspecialchars($project['title'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($project['description'] ?? '') ?></td>
+                            <td>
+                                <button type="button" class="btn edit-project-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $project['id'] ?>" data-icon="<?= htmlspecialchars($project['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($project['image'] ?? '') ?>" data-title="<?= htmlspecialchars($project['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($project['description'] ?? '') ?>">Edit</button>
+                                <form method="post" style="display:inline;">
+                                    <button type="submit" name="delete_project" value="<?= $project['id'] ?>" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label>OR Image URL (External link - Optional)</label>
-                    <input type="url" name="project_image" id="project_image" placeholder="https://example.com/image.jpg">
-                </div>
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" name="project_title" id="project_title" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea name="project_desc" id="project_desc" required></textarea>
-                </div>
-                <button type="submit" name="save_project" id="project-submit-btn" class="btn">Add Project</button>
-                <button type="button" id="project-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
-            </form>
+            </div>
         </div>
 
         <!-- News Section -->
         <div class="admin-card" id="news-card">
             <h2>News</h2>
-            <table>
-                <tr>
-                    <th>Date</th>
-                    <th>Image URL</th>
-                    <th>Title</th>
-                    <th>Content</th>
-                    <th>Action</th>
-                </tr>
-                <?php foreach ($data['news'] ?? [] as $news): ?>
-                <tr>
-                    <td><?= htmlspecialchars($news['date'] ?? '') ?></td>
-                    <td>
-                        <?php if(!empty($news['image'])): ?>
-                            <img src="<?= htmlspecialchars($news['image']) ?>" alt="Preview" style="max-width: 50px; max-height: 50px;">
-                        <?php else: ?>
-                            None
-                        <?php endif; ?>
-                    </td>
-                    <td><?= htmlspecialchars($news['title'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($news['content'] ?? '') ?></td>
-                    <td>
-                        <button type="button" class="btn edit-news-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $news['id'] ?>" data-date="<?= htmlspecialchars($news['date'] ?? '') ?>" data-image="<?= htmlspecialchars($news['image'] ?? '') ?>" data-title="<?= htmlspecialchars($news['title'] ?? '') ?>" data-content="<?= htmlspecialchars($news['content'] ?? '') ?>">Edit</button>
-                        <form method="post" style="display:inline;">
-                            <button type="submit" name="delete_news" value="<?= $news['id'] ?>" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
-            <h3 id="news-form-title">Add News Item</h3>
-            <form method="post" enctype="multipart/form-data" id="news-form">
-                <input type="hidden" name="edit_news_index" id="edit_news_index" value="">
-                <div class="form-group">
-                    <label>Date (YYYY-MM-DD)</label>
-                    <input type="date" name="news_date" id="news_date" required>
+            <div class="split-layout">
+                <div class="form-section">
+                    <h3 id="news-form-title" style="margin-top: 0;">Add News Item</h3>
+                    <form method="post" enctype="multipart/form-data" id="news-form">
+                        <input type="hidden" name="edit_news_index" id="edit_news_index" value="">
+                        <div class="form-group">
+                            <label>Date (YYYY-MM-DD)</label>
+                            <input type="date" name="news_date" id="news_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Image Upload (Local file - Optional)</label>
+                            <input type="file" name="news_image_file" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label>OR Image URL (External link - Optional)</label>
+                            <input type="url" name="news_image" id="news_image" placeholder="https://example.com/news.jpg">
+                        </div>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" name="news_title" id="news_title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Content</label>
+                            <textarea name="news_content" id="news_content" required></textarea>
+                        </div>
+                        <button type="submit" name="save_news" id="news-submit-btn" class="btn">Add News</button>
+                        <button type="button" id="news-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label>Image Upload (Local file - Optional)</label>
-                    <input type="file" name="news_image_file" accept="image/*">
+                <div class="table-section">
+                    <table>
+                        <tr>
+                            <th>Date</th>
+                            <th>Image URL</th>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($data['news'] ?? [] as $news): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($news['date'] ?? '') ?></td>
+                            <td>
+                                <?php if(!empty($news['image'])): ?>
+                                    <img src="<?= htmlspecialchars($news['image']) ?>" alt="Preview" style="max-width: 50px; max-height: 50px;">
+                                <?php else: ?>
+                                    None
+                                <?php endif; ?>
+                            </td>
+                            <td><?= htmlspecialchars($news['title'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($news['content'] ?? '') ?></td>
+                            <td>
+                                <button type="button" class="btn edit-news-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $news['id'] ?>" data-date="<?= htmlspecialchars($news['date'] ?? '') ?>" data-image="<?= htmlspecialchars($news['image'] ?? '') ?>" data-title="<?= htmlspecialchars($news['title'] ?? '') ?>" data-content="<?= htmlspecialchars($news['content'] ?? '') ?>">Edit</button>
+                                <form method="post" style="display:inline;">
+                                    <button type="submit" name="delete_news" value="<?= $news['id'] ?>" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label>OR Image URL (External link - Optional)</label>
-                    <input type="url" name="news_image" id="news_image" placeholder="https://example.com/news.jpg">
-                </div>
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" name="news_title" id="news_title" required>
-                </div>
-                <div class="form-group">
-                    <label>Content</label>
-                    <textarea name="news_content" id="news_content" required></textarea>
-                </div>
-                <button type="submit" name="save_news" id="news-submit-btn" class="btn">Add News</button>
-                <button type="button" id="news-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
-            </form>
+            </div>
         </div>
 
         <!-- Clients Section -->
@@ -441,6 +479,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group">
                     <label>Headquarters Address</label>
                     <textarea name="contact_address" required rows="3"><?= htmlspecialchars($data['contact']['address'] ?? '') ?></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Telephone</label>
+                    <input type="text" name="contact_tp" value="<?= htmlspecialchars($data['contact']['tp'] ?? '') ?>">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="contact_email" value="<?= htmlspecialchars($data['contact']['email'] ?? '') ?>">
                 </div>
                 <button type="submit" name="update_contact" class="btn">Update Contact</button>
             </form>

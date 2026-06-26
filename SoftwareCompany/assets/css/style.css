@@ -113,6 +113,7 @@ section {
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
+    gap: 20px;
 }
 .nav.scrolled {
     background: var(--nav-bg);
@@ -128,10 +129,13 @@ section {
     display: flex;
     align-items: center;
     gap: 12px;
+    max-width: 250px;
 }
 .logo-img {
     height: 48px;
-    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: left;
     display: block;
 }
 

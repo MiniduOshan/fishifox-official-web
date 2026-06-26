@@ -148,14 +148,21 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
     
     <?php 
     // Real-world sample logos for demonstration
-    $clientLogos = !empty($data['clients']) ? $data['clients'] : [
-        'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
-        'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
-        'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
-        'https://upload.wikimedia.org/wikipedia/commons/0/08/Cisco_logo_blue_2016.svg',
-        'https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg',
-        'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg'
-    ];
+    $clientLogos = [];
+    if (!empty($data['clients'])) {
+        foreach ($data['clients'] as $c) {
+            $clientLogos[] = $c['image_url'];
+        }
+    } else {
+        $clientLogos = [
+            'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
+            'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+            'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
+            'https://upload.wikimedia.org/wikipedia/commons/0/08/Cisco_logo_blue_2016.svg',
+            'https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg',
+            'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg'
+        ];
+    }
     ?>
     <div class="clients-marquee-wrapper reveal">
         <div class="clients-marquee-track">
