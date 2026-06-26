@@ -187,7 +187,7 @@
     <!-- Execution Module Pipelines -->
     <script src="assets/js/theme.js"></script>
     <script src="assets/js/parallax.js"></script>
-    <script src="assets/js/script.js"></script>
-    <script src="assets/js/fluid.js"></script>
+    <script src="assets/js/script.js?v=<?= time() ?>"></script>
+    <script src="assets/js/fluid.js?v=<?= time() ?>"></script>
 </body>
 </html>

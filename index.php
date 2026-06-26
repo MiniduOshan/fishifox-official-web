@@ -243,10 +243,39 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
         gsap.to('.scroll-indicator', { opacity: 1, duration: 0.7, delay: 0.62 });
 
 
-        // Horizontal Scroll for Portfolio replaced by native CSS scrolling
+        // Horizontal Scroll for Portfolio
+        const portfolioSection = document.querySelector('.portfolio-section');
+        const portfolioGrid = document.querySelector('.portfolio-grid-side');
+        const portfolioMask = document.querySelector('.portfolio-grid-mask');
+        
+        if (portfolioGrid && portfolioSection && portfolioMask) {
+            let getScrollAmount = () => {
+                let overflow = portfolioGrid.scrollWidth - portfolioMask.offsetWidth;
+                return overflow > 0 ? -(overflow + 40) : 0;
+            };
 
+            let getScrollEnd = () => {
+                let overflow = portfolioGrid.scrollWidth - portfolioMask.offsetWidth;
+                return overflow > 0 ? `+=${overflow}` : "+=0";
+            };
 
-        // Stats Counter Effect
+            let mm = gsap.matchMedia();
+            mm.add("(min-width: 1025px)", () => {
+                portfolioSection.style.overflow = 'hidden';
+                gsap.to(portfolioGrid, {
+                    x: getScrollAmount,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: portfolioSection,
+                        start: "top 5%",
+                        end: getScrollEnd,
+                        pin: true,
+                        scrub: 1,
+                        invalidateOnRefresh: true
+                    }
+                });
+            });
+        }
         document.querySelectorAll('.stat-number').forEach(stat => {
             const target = parseInt(stat.getAttribute('data-target'));
             ScrollTrigger.create({
