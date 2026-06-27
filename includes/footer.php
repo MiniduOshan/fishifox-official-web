@@ -133,6 +133,11 @@
                 <p style="color: #94a3b8; line-height: 1.6;">
                     Your premier IT solutions provider in Sri Lanka. Diving to an unexpected depth to bring you digital excellence.
                 </p>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.9rem;">
+                    <a href="terms-conditions" style="color: var(--accent-color); text-decoration: none;">Terms & Conditions</a>
+                    <span style="color: rgba(255, 255, 255, 0.2);">|</span>
+                    <a href="privacy-policy" style="color: var(--accent-color); text-decoration: none;">Privacy Policy</a>
+                </div>
             </div>
             
             <div class="footer-links">
@@ -151,30 +156,21 @@
                     <?php
                     // Ensure PDO is available
                     global $pdo;
-                    $socials = ['facebook' => '', 'twitter' => '', 'instagram' => '', 'linkedin' => ''];
+                    $socials = ['facebook' => '#', 'twitter' => '#', 'instagram' => '#', 'linkedin' => '#'];
                     if (isset($pdo)) {
                         $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'social_%'");
                         while ($row = $stmt->fetch()) {
                             $key = str_replace('social_', '', $row['setting_key']);
-                            $socials[$key] = $row['setting_value'];
+                            if (!empty($row['setting_value'])) {
+                                $socials[$key] = $row['setting_value'];
+                            }
                         }
                     }
                     ?>
-                    <?php if (!empty($socials['facebook'])): ?>
-                        <a href="<?= htmlspecialchars($socials['facebook']) ?>" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($socials['twitter'])): ?>
-                        <a href="<?= htmlspecialchars($socials['twitter']) ?>" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($socials['instagram'])): ?>
-                        <a href="<?= htmlspecialchars($socials['instagram']) ?>" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($socials['linkedin'])): ?>
-                        <a href="<?= htmlspecialchars($socials['linkedin']) ?>" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                    <?php endif; ?>
+                    <a href="<?= htmlspecialchars($socials['facebook']) ?>" target="_blank" rel="noopener noreferrer" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="<?= htmlspecialchars($socials['twitter']) ?>" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="<?= htmlspecialchars($socials['instagram']) ?>" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="<?= htmlspecialchars($socials['linkedin']) ?>" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>

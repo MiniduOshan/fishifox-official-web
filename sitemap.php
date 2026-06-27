@@ -36,6 +36,8 @@ addSitemapUrl($baseUrl . 'services.php', $currentDate, 'weekly', '0.8');
 addSitemapUrl($baseUrl . 'portfolio.php', $currentDate, 'weekly', '0.8');
 addSitemapUrl($baseUrl . 'about.php', $currentDate, 'monthly', '0.7');
 addSitemapUrl($baseUrl . 'contact.php', $currentDate, 'monthly', '0.7');
+addSitemapUrl($baseUrl . 'privacy-policy', $currentDate, 'monthly', '0.5');
+addSitemapUrl($baseUrl . 'terms-conditions', $currentDate, 'monthly', '0.5');
 
 
 // --- MODULE B: DYNAMIC CONTENT EXPANSIONS (Optional Framework Stubs) ---
