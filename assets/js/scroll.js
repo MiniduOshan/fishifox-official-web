@@ -49,7 +49,7 @@ if (sections.length > 0) {
     sections.forEach((section, index) => {
         ScrollTrigger.create({
             trigger: section,
-            start: "top 50%",
+            start: "top 80%", // Increased sensitivity from 50%
             onEnter: () => updateCameraForSection(index),
             onEnterBack: () => updateCameraForSection(index)
         });

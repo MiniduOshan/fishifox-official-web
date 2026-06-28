@@ -14,6 +14,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)'; 
             });
         });
+    } else {
+        // Mobile touch feedback (does not break touch scrolling)
+        interactiveCards.forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'perspective(1000px) translateY(-4px) scale(0.98)';
+                card.style.transition = 'transform 0.2s ease-out';
+            }, { passive: true });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'perspective(1000px) translateY(0) scale(1)';
+            }, { passive: true });
+        });
     }
 
     // Accordion Event System initialization
