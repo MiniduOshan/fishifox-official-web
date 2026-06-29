@@ -1,5 +1,8 @@
 RewriteEngine On
 
+# Redirect /index or /index.php to the root domain
+RewriteCond %{THE_REQUEST} \s/index(\.php)?\s [NC]
+RewriteRule ^index(\.php)?$ / [L,R=301]
 # Unless directory, remove trailing slash
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)/$ /$1 [L,R=301]

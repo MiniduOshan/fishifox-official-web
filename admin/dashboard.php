@@ -175,16 +175,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("DELETE FROM clients WHERE id=?");
         $stmt->execute([$_POST['delete_client']]);
     } elseif (isset($_POST['save_stat'])) {
-        $icon = $_POST['stat_icon'];
         $number = $_POST['stat_number'];
         $label = $_POST['stat_label'];
         if (isset($_POST['edit_stat_index']) && $_POST['edit_stat_index'] !== '') {
             $id = $_POST['edit_stat_index'];
-            $stmt = $pdo->prepare("UPDATE stats SET icon=?, number=?, label=? WHERE id=?");
-            $stmt->execute([$icon, $number, $label, $id]);
+            $stmt = $pdo->prepare("UPDATE stats SET icon='', number=?, label=? WHERE id=?");
+            $stmt->execute([$number, $label, $id]);
         } else {
-            $stmt = $pdo->prepare("INSERT INTO stats (icon, number, label) VALUES (?, ?, ?)");
-            $stmt->execute([$icon, $number, $label]);
+            $stmt = $pdo->prepare("INSERT INTO stats (icon, number, label) VALUES ('', ?, ?)");
+            $stmt->execute([$number, $label]);
         }
     } elseif (isset($_POST['delete_stat'])) {
         $stmt = $pdo->prepare("DELETE FROM stats WHERE id=?");
@@ -281,10 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <h3 id="stat-form-title" style="margin-top: 0;">Add New Stat</h3>
                     <form method="post" id="stat-form">
                         <input type="hidden" name="edit_stat_index" id="edit_stat_index" value="">
-                        <div class="form-group">
-                            <label>Icon (Emoji)</label>
-                            <input type="text" name="stat_icon" id="stat_icon" required>
-                        </div>
+                        <input type="hidden" name="stat_icon" id="stat_icon" value="icon">
                         <div class="form-group">
                             <label>Number (Target)</label>
                             <input type="number" name="stat_number" id="stat_number" required>
@@ -300,14 +296,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="table-section">
                     <table>
                         <tr>
-                            <th>Icon</th>
+                            <!-- <th>Icon</th> -->
                             <th>Target Number</th>
                             <th>Label</th>
                             <th>Action</th>
                         </tr>
                         <?php foreach ($data['stats'] ?? [] as $stat): ?>
                         <tr>
-                            <td><?= htmlspecialchars($stat['icon'] ?? '') ?></td>
+                            <!-- <td><?= htmlspecialchars($stat['icon'] ?? '') ?></td> -->
                             <td><?= htmlspecialchars($stat['number'] ?? '') ?></td>
                             <td><?= htmlspecialchars($stat['label'] ?? '') ?></td>
                             <td>
