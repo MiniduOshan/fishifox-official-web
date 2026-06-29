@@ -16,7 +16,7 @@ if (isset($_COOKIE['fishifox_admin_auth'])) {
 }
 
 if (!$isAuthenticated) {
-    header('Location: login.php');
+    header('Location: login');
     exit;
 }
 
