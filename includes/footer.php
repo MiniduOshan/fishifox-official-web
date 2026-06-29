@@ -134,7 +134,7 @@
                     Your premier IT solutions provider in Sri Lanka. Diving to an unexpected depth to bring you digital excellence.
                 </p>
                 <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.9rem;">
-                    <a href="terms-conditions" style="color: var(--accent-color); text-decoration: none;">Terms & Conditions</a>
+                    <a href="https://fishifox.com/terms-conditions/" style="color: var(--accent-color); text-decoration: none;">Terms & Conditions</a>
                     <span style="color: rgba(255, 255, 255, 0.2);">|</span>
                     <a href="privacy-policy" style="color: var(--accent-color); text-decoration: none;">Privacy Policy</a>
                 </div>

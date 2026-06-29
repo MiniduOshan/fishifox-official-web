@@ -62,8 +62,8 @@
                 </ul>
 
                 <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; color: #0f172a; margin: 40px 0 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">6. Refunds</h2>
-                <p style="margin-bottom: 1.5rem;">Refund rules follow our Refund Policy, available at: <br>
-                <a href="https://fishifox.com/refund-policy" style="color: #ef4444; text-decoration: none; word-break: break-all;">https://fishifox.com/refund-policy</a></p>
+                <p style="margin-bottom: 1.5rem;">For any refund requests or to review our refund rules, please reach out to us at: <br>
+                <a href="https://fishifox.com/#contact" style="color: #ef4444; text-decoration: none; word-break: break-all;">https://fishifox.com/contact</a></p>
 
                 <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; color: #0f172a; margin: 40px 0 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">7. Limitation of Liability</h2>
                 <p style="margin-bottom: 1rem;">FishiFox is not liable for:</p>
