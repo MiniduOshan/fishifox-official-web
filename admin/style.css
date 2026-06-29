@@ -156,6 +156,9 @@ body {
 .form-group input[type="text"],
 .form-group input[type="url"],
 .form-group input[type="date"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="password"],
 .form-group textarea {
     width: 100%;
     padding: 0.5rem 0.75rem;

@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 ob_start();
 require_once '../config/database.php';
 
@@ -14,7 +17,6 @@ if (isset($_COOKIE['fishifox_admin_auth'])) {
         }
     }
 }
-
 if (!$isAuthenticated) {
     header('Location: login');
     exit;
@@ -192,15 +194,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $address = $_POST['contact_address'];
         $tp = $_POST['contact_tp'];
         $email = $_POST['contact_email'];
-        $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('contact_address', ?), ('contact_tp', ?), ('contact_email', ?)");
-        $stmt->execute([$address, $tp, $email]);
+        $keys = ['contact_address' => $address, 'contact_tp' => $tp, 'contact_email' => $email];
+        foreach($keys as $k => $v) {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM settings WHERE setting_key=?");
+            $stmt->execute([$k]);
+            if ($stmt->fetchColumn() > 0) {
+                $stmt = $pdo->prepare("UPDATE settings SET setting_value=? WHERE setting_key=?");
+                $stmt->execute([$v, $k]);
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
+                $stmt->execute([$k, $v]);
+            }
+        }
     } elseif (isset($_POST['update_socials'])) {
         $fb = $_POST['social_facebook'];
         $tw = $_POST['social_twitter'];
         $ig = $_POST['social_instagram'];
         $li = $_POST['social_linkedin'];
-        $stmt = $pdo->prepare("REPLACE INTO settings (setting_key, setting_value) VALUES ('social_facebook', ?), ('social_twitter', ?), ('social_instagram', ?), ('social_linkedin', ?)");
-        $stmt->execute([$fb, $tw, $ig, $li]);
+        $keys = ['social_facebook' => $fb, 'social_twitter' => $tw, 'social_instagram' => $ig, 'social_linkedin' => $li];
+        foreach($keys as $k => $v) {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM settings WHERE setting_key=?");
+            $stmt->execute([$k]);
+            if ($stmt->fetchColumn() > 0) {
+                $stmt = $pdo->prepare("UPDATE settings SET setting_value=? WHERE setting_key=?");
+                $stmt->execute([$v, $k]);
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
+                $stmt->execute([$k, $v]);
+            }
+        }
     } elseif (isset($_POST['save_faq'])) {
         $question = $_POST['faq_question'];
         $answer = $_POST['faq_answer'];

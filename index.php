@@ -10,8 +10,11 @@ while ($row = $stmt->fetch()) {
 }
 $data['vision'] = $data['vision'] ?? '';
 $data['mission'] = $data['mission'] ?? '';
-$data['contact'] = ['address' => $data['contact_address'] ?? ''];
-
+$data['contact'] = [
+    'address' => !empty($data['contact_address']) ? $data['contact_address'] : 'No146/120D, Salmal Place, Mattegoda, Kottawa, Sri Lanka',
+    'tp' => !empty($data['contact_tp']) ? $data['contact_tp'] : '+94 777 615 169',
+    'email' => !empty($data['contact_email']) ? $data['contact_email'] : 'info@fishifox.com'
+];
 // Fetch other tables
 $data['services'] = $pdo->query("SELECT * FROM services")->fetchAll();
 $data['projects'] = $pdo->query("SELECT * FROM projects")->fetchAll();
@@ -203,21 +206,21 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
                     <div class="contact-detail-icon">📍</div>
                     <div class="contact-detail-text">
                         <h5>LOCATION</h5>
-                        <p><?= nl2br(htmlspecialchars($data['contact']['address'] ?? 'No146/120D, Salmal Place, Mattegoda, Kottawa, Sri Lanka')) ?></p>
+                        <p><?= nl2br(htmlspecialchars($data['contact']['address'])) ?></p>
                     </div>
                 </div>
                 <div class="contact-detail-item">
                     <div class="contact-detail-icon">📞</div>
                     <div class="contact-detail-text">
                         <h5>Phone</h5>
-                        <p><?= htmlspecialchars($data['contact']['phone'] ?? '+94 777 615 169') ?></p>
+                        <p><?= htmlspecialchars($data['contact']['tp']) ?></p>
                     </div>
                 </div>
                 <div class="contact-detail-item">
                     <div class="contact-detail-icon">✉️</div>
                     <div class="contact-detail-text">
                         <h5>Email</h5>
-                        <p><a href="mailto:info@fishifox.com" style="color: inherit; text-decoration: none;"><?= htmlspecialchars($data['contact']['email'] ?? 'info@fishifox.com') ?></a></p>
+                        <p><a href="mailto:<?= htmlspecialchars($data['contact']['email']) ?>" style="color: inherit; text-decoration: none;"><?= htmlspecialchars($data['contact']['email']) ?></a></p>
                     </div>
                 </div>
             </div>

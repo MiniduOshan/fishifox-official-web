@@ -49,6 +49,23 @@ if (file_exists($htaccess_source)) {
     echo "Successfully copied .htaccess to the main website!<br>";
 }
 
+// Copy admin/style.css
+$admin_css_source = __DIR__ . '/admin/style.css';
+$admin_css_target = __DIR__ . '/../admin/style.css';
+if (file_exists($admin_css_source)) {
+    copy($admin_css_source, $admin_css_target);
+    echo "Successfully copied admin/style.css to the main website!<br>";
+}
+
+// Copy index.php
+$index_source = __DIR__ . '/index.php';
+$index_target = __DIR__ . '/../index.php';
+if (file_exists($index_source)) {
+    copy($index_source, $index_target);
+    echo "Successfully copied index.php to the main website!<br>";
+}
+
+
 
 
 echo "<h3>DEPLOYMENT COMPLETE!</h3>";
