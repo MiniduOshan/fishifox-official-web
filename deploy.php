@@ -13,10 +13,10 @@ if (file_exists("$source_dir/login.php")) {
     echo "Successfully copied login.php to the main website!<br>";
 }
 
-// Copy index.php
-if (file_exists("$source_dir/index.php")) {
-    copy("$source_dir/index.php", "$target_dir/index.php");
-    echo "Successfully copied index.php to the main website!<br>";
+// Copy dashboard.php
+if (file_exists("$source_dir/dashboard.php")) {
+    copy("$source_dir/dashboard.php", "$target_dir/dashboard.php");
+    echo "Successfully copied dashboard.php to the main website!<br>";
 }
 
 // Copy logout.php

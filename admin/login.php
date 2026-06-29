@@ -10,7 +10,7 @@ if (isset($_COOKIE['fishifox_admin_auth'])) {
         $stmt->execute([$parts[0]]);
         $dbAdmin = $stmt->fetch();
         if ($dbAdmin && $dbAdmin['password'] === $parts[1]) {
-            header('Location: index.php');
+            header('Location: dashboard');
             exit;
         }
     }
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cookieData = base64_encode($admin['email'] . '::' . $admin['password']);
             setcookie('fishifox_admin_auth', $cookieData, time() + 86400 * 7, '/');
 
-            header('Location: index.php');
+            header('Location: dashboard');
             exit;
         } else {
             $error = 'Invalid email or password.';

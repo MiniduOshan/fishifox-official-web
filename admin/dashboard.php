@@ -148,14 +148,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['delete_news'])) {
         $stmt = $pdo->prepare("DELETE FROM news WHERE id=?");
         $stmt->execute([$_POST['delete_news']]);
-    } elseif (isset($_POST['update_clients'])) {
-        $clientsStr = $_POST['clients'];
-        $clientsArr = array_filter(array_map('trim', explode("\n", $clientsStr)));
-        $pdo->exec("TRUNCATE TABLE clients");
-        $stmt = $pdo->prepare("INSERT INTO clients (image_url) VALUES (?)");
-        foreach ($clientsArr as $url) {
-            $stmt->execute([$url]);
+    } elseif (isset($_POST['save_client'])) {
+        $image = $_POST['client_image'] ?? '';
+        
+        if (isset($_FILES['client_image_file']) && $_FILES['client_image_file']['error'] == 0) {
+            $fileName = time() . '_' . basename($_FILES['client_image_file']['name']);
+            $targetPath = '../assets/images/uploads/' . $fileName;
+            if (move_uploaded_file($_FILES['client_image_file']['tmp_name'], $targetPath)) {
+                $image = 'assets/images/uploads/' . $fileName;
+            }
         }
+
+        if (isset($_POST['edit_client_index']) && $_POST['edit_client_index'] !== '') {
+            $id = $_POST['edit_client_index'];
+            if (empty($image) && empty($_FILES['client_image_file']['name'])) {
+                // Keep old image
+            } else {
+                $stmt = $pdo->prepare("UPDATE clients SET image_url=? WHERE id=?");
+                $stmt->execute([$image, $id]);
+            }
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO clients (image_url) VALUES (?)");
+            $stmt->execute([$image]);
+        }
+    } elseif (isset($_POST['delete_client'])) {
+        $stmt = $pdo->prepare("DELETE FROM clients WHERE id=?");
+        $stmt->execute([$_POST['delete_client']]);
     } elseif (isset($_POST['save_stat'])) {
         $icon = $_POST['stat_icon'];
         $number = $_POST['stat_number'];
@@ -200,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$_POST['delete_faq']]);
     }
 
-    header("Location: index.php");
+    header("Location: dashboard");
     exit;
 }
 ?>
@@ -508,14 +526,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Clients Section -->
         <div class="admin-card" id="clients-card">
             <h2>Clients Logos</h2>
-            <form method="post">
-                <div class="form-group">
-                    <label>Client Logo URLs (One external link per line, e.g., https://example.com/logo.png)</label>
-                    <?php $clientUrls = array_column($data['clients'] ?? [], 'image_url'); ?>
-                    <textarea name="clients" required rows="6"><?= htmlspecialchars(implode("\n", $clientUrls)) ?></textarea>
+            <div class="split-layout">
+                <div class="form-section">
+                    <h3 id="client-form-title" style="margin-top: 0;">Add New Client</h3>
+                    <form method="post" enctype="multipart/form-data" id="client-form">
+                        <input type="hidden" name="edit_client_index" id="edit_client_index" value="">
+                        <div class="form-group">
+                            <label>Logo Upload (Local file - Optional)</label>
+                            <input type="file" name="client_image_file" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label>OR Logo URL (External link - Optional)</label>
+                            <input type="url" name="client_image" id="client_image" placeholder="https://example.com/logo.jpg">
+                        </div>
+                        <button type="submit" name="save_client" id="client-submit-btn" class="btn">Add Client</button>
+                        <button type="button" id="client-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
+                    </form>
                 </div>
-                <button type="submit" name="update_clients" class="btn">Update Clients</button>
-            </form>
+                <div class="table-section">
+                    <table>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Image URL</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($data['clients'] ?? [] as $client): ?>
+                        <tr>
+                            <td>
+                                <?php if(!empty($client['image_url'])): ?>
+                                    <img src="<?= htmlspecialchars(strpos($client['image_url'], 'http') === 0 ? $client['image_url'] : '../' . $client['image_url']) ?>" alt="Preview" style="max-width: 50px; max-height: 50px; object-fit: contain;">
+                                <?php else: ?>
+                                    None
+                                <?php endif; ?>
+                            </td>
+                            <td style="word-break: break-all; max-width: 200px;"><?= htmlspecialchars($client['image_url'] ?? '') ?></td>
+                            <td>
+                                <button type="button" class="btn edit-client-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $client['id'] ?>" data-image="<?= htmlspecialchars($client['image_url'] ?? '') ?>">Edit</button>
+                                <form method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this client?');">
+                                    <button type="submit" name="delete_client" value="<?= $client['id'] ?>" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <!-- Contact Section -->
@@ -743,6 +798,28 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('edit_news_index').value = '';
             document.getElementById('news-form-title').innerText = 'Add News Item';
             document.getElementById('news-submit-btn').innerText = 'Add News';
+            this.style.display = 'none';
+        });
+    }
+
+    // Client Edit Logic
+    const editClientBtns = document.querySelectorAll('.edit-client-btn');
+    const clientCancelBtn = document.getElementById('client-cancel-btn');
+    if (clientCancelBtn) {
+        editClientBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('edit_client_index').value = this.getAttribute('data-index');
+                document.getElementById('client_image').value = this.getAttribute('data-image');
+                document.getElementById('client-form-title').innerText = 'Edit Client';
+                document.getElementById('client-submit-btn').innerText = 'Update Client';
+                clientCancelBtn.style.display = 'inline-block';
+            });
+        });
+        clientCancelBtn.addEventListener('click', function() {
+            document.getElementById('client-form').reset();
+            document.getElementById('edit_client_index').value = '';
+            document.getElementById('client-form-title').innerText = 'Add New Client';
+            document.getElementById('client-submit-btn').innerText = 'Add Client';
             this.style.display = 'none';
         });
     }
