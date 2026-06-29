@@ -1,30 +1,19 @@
 <?php
-session_start();
+ob_start();
 require_once '../config/database.php';
 
-// Secret Token Protection Route Check
-$stmt = $pdo->query("SELECT setting_value FROM settings WHERE setting_key = 'admin_token'");
-$tokenRecord = $stmt->fetch();
-$expectedToken = $tokenRecord ? $tokenRecord['setting_value'] : '';
-
-// Validate token from URL parameter
-if (isset($_GET['token']) && $_GET['token'] === $expectedToken) {
-    $_SESSION['admin_unlocked'] = true;
-    // Clean the URL by reloading without the token parameter
-    header('Location: login');
-    exit;
-}
-
-// 404 Ghost Mode if not unlocked
-if (!isset($_SESSION['admin_unlocked']) || $_SESSION['admin_unlocked'] !== true) {
-    header("HTTP/1.1 404 Not Found");
-    include('../404.php');
-    exit;
-}
-
-if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: ./');
-    exit;
+// Check if already logged in via cookie
+if (isset($_COOKIE['fishifox_admin_auth'])) {
+    $parts = explode('::', base64_decode($_COOKIE['fishifox_admin_auth']));
+    if (count($parts) === 2) {
+        $stmt = $pdo->prepare("SELECT password FROM admins WHERE email = ?");
+        $stmt->execute([$parts[0]]);
+        $dbAdmin = $stmt->fetch();
+        if ($dbAdmin && $dbAdmin['password'] === $parts[1]) {
+            header('Location: index.php');
+            exit;
+        }
+    }
 }
 
 $error = '';
@@ -59,9 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("DELETE FROM login_attempts WHERE ip_address = ?");
             $stmt->execute([$ip]);
 
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['admin_email'] = $admin['email'];
-            header('Location: ./');
+            // Use secure cookie instead of broken server sessions
+            $cookieData = base64_encode($admin['email'] . '::' . $admin['password']);
+            setcookie('fishifox_admin_auth', $cookieData, time() + 86400 * 7, '/');
+
+            header('Location: index.php');
             exit;
         } else {
             $error = 'Invalid email or password.';

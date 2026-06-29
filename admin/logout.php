@@ -1,6 +1,4 @@
 <?php
-session_start();
-session_unset();
-session_destroy();
-header('Location: login');
+setcookie('fishifox_admin_auth', '', time() - 3600, '/');
+header('Location: login.php');
 exit;

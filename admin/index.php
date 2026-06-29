@@ -1,10 +1,24 @@
 <?php
-session_start();
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: login');
+ob_start();
+require_once '../config/database.php';
+
+$isAuthenticated = false;
+if (isset($_COOKIE['fishifox_admin_auth'])) {
+    $parts = explode('::', base64_decode($_COOKIE['fishifox_admin_auth']));
+    if (count($parts) === 2) {
+        $stmt = $pdo->prepare("SELECT password FROM admins WHERE email = ?");
+        $stmt->execute([$parts[0]]);
+        $dbAdmin = $stmt->fetch();
+        if ($dbAdmin && $dbAdmin['password'] === $parts[1]) {
+            $isAuthenticated = true;
+        }
+    }
+}
+
+if (!$isAuthenticated) {
+    header('Location: login.php');
     exit;
 }
-require_once '../config/database.php';
 
 // Fetch all data for display
 $data = [];
