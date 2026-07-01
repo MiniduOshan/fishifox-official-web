@@ -24,6 +24,14 @@ $data['stats'] = $pdo->query("SELECT * FROM stats")->fetchAll();
 $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
 ?>
 <?php include 'includes/header.php'; ?>
+<?php
+$latestNews = $pdo->query("
+    SELECT *
+    FROM news
+    ORDER BY is_headline DESC, date DESC, id DESC
+    LIMIT 4
+")->fetchAll();
+?>
 
 <!-- Hero Segment Module -->
 <section class="hero" id="hero">
@@ -151,6 +159,55 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
     </div>
 </section>
 
+<!-- Latest News Section -->
+<section class="news-preview-section" id="news">
+    <div class="section-header reveal">
+        <p class="section-label">Latest News</p>
+        <h2 class="section-title">Latest Updates</h2>
+    </div>
+
+    <div class="news-preview-grid">
+        <?php foreach ($latestNews as $news): ?>
+            <a href="article?id=<?= $news['id'] ?>" class="news-preview-card">
+
+                <?php if (!empty($news['image'])): ?>
+                    <img src="<?= htmlspecialchars($news['image']) ?>"
+                         alt="<?= htmlspecialchars($news['title']) ?>">
+                <?php endif; ?>
+
+                <div class="news-preview-content">
+                    <span class="news-date">
+                        <?= htmlspecialchars($news['date']) ?>
+                    </span>
+
+                    <h3><?= htmlspecialchars($news['title']) ?></h3>
+
+                    <p>
+                        <?= mb_strimwidth(strip_tags($news['content']), 0, 120, "...") ?>
+                    </p>
+                </div>
+
+            </a>
+        <?php endforeach; ?>
+    </div>
+    <div class="news-slider-ui">
+        <div class="news-dots">
+            <span class="active"></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div class="news-btn-wrapper">
+        <a href="news.php" class="hero-cta news-btn">
+            <span>View All News</span>
+            <span class="arrow">
+                <i class="fas fa-arrow-right"></i>
+            </span>
+        </a>
+    </div>
+</section>
 
 
 <!-- Clients Section -->
@@ -320,6 +377,36 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
                 }
             });
         });
+
+        const slider = document.querySelector(".news-preview-grid");
+        if (slider) {
+
+            const dots = document.querySelectorAll(".news-dots span");
+            const hint = document.querySelector(".swipe-hint");
+
+            slider.addEventListener("scroll", () => {
+
+                const index = Math.round(
+                    slider.scrollLeft / slider.offsetWidth
+                );
+
+                dots.forEach(dot => dot.classList.remove("active"));
+
+                if(dots[index]){
+                    dots[index].classList.add("active");
+                }
+
+                // Hide swipe hint after user starts scrolling
+                if(slider.scrollLeft > 20){
+                    hint.style.opacity = "0";
+                    hint.style.pointerEvents = "none";
+                }else{
+                    hint.style.opacity = "1";
+                }
+
+            });
+
+        }
     });
 </script>
 

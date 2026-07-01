@@ -144,7 +144,7 @@
                 <h3>Quick Links</h3>
                 <ul>
                     <li><a href="index#about">About Us</a></li>
-                    <li><a href="news">News</a></li>
+                    <li><a href="news.php">News</a></li>
                     <li><a href="faq">FAQ</a></li>
                     <li><a href="index#contact">Contact</a></li>
                 </ul>
