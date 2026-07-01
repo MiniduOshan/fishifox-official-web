@@ -31,10 +31,12 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
         <p class="hero-subtitle">Welcome to FishiFox</p>
         <h1 class="hero-title">
             <span class="line">Diving to an</span>
-            <span class="line">Unexpected Depth</span>
+            <span class="line">
+                Un<span class="gradient-text">expected</span>&nbsp;Depth
+            </span>
         </h1>
         <p class="hero-description">
-            At FishiFox, we’re not just another IT company. We’re your dedicated partner in achieving digital excellence. With a steadfast commitment to delivering top-tier web development, mobile app solutions, IT base research, and digital marketing services, we stand at the forefront of innovation in Sri Lanka’s IT industry.
+            At FishiFox, we’re not just another IT company. We’re your dedicated partner in achieving digital excellence.
         </p>
         <a href="#services" class="hero-cta">Explore Services</a>
     </div>
@@ -232,14 +234,41 @@ $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
     document.addEventListener("DOMContentLoaded", () => {
         // Hero Parallax Setup
         gsap.to('.hero-subtitle', { opacity: 1, y: 0, duration: 0.7, delay: 0.12 });
-        document.querySelectorAll('.hero-title .line').forEach((line, index) => {
-            const text = line.textContent.trim(); line.innerHTML = '';
-            text.split('').forEach((char, i) => {
-                const span = document.createElement('span');
-                span.className = 'char'; span.textContent = char === ' ' ? '\u00A0' : char;
+        document.querySelectorAll('.hero-title .line').forEach((line) => {
+
+            if (line.querySelector('.gradient-text')) {
+
+                gsap.from(line, {
+                    opacity: 0,
+                    y: 100,
+                    duration: 0.8
+                });
+
+                return;
+            }
+
+            const text = line.textContent;
+            line.innerHTML = "";
+
+            [...text].forEach((char, i) => {
+                const span = document.createElement("span");
+                span.className = "char";
+                span.innerHTML = char === " " ? "&nbsp;" : char;
+
                 line.appendChild(span);
-                gsap.to(span, { opacity: 1, y: 0, duration: 0.7, delay: 0.18 + (index * 0.12) + (i * 0.01) });
+
+                gsap.fromTo(
+                    span,
+                    { opacity: 0, y: 100 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.7,
+                        delay: 0.18 + i * 0.02
+                    }
+                );
             });
+
         });
         gsap.to('.hero-description', { opacity: 1, y: 0, duration: 0.7, delay: 0.38 });
         gsap.to('.hero-cta', { opacity: 1, y: 0, duration: 0.7, delay: 0.5 });
