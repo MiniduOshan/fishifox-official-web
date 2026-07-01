@@ -127,6 +127,12 @@ $latestNews = $pdo->query("
             <p class="section-label">Our Work</p>
             <h2 class="section-title" style="margin-bottom: 20px; text-align: left;">Case Studies & Products</h2>
             <p class="section-desc" style="text-align: left; line-height: 1.6;">Explore some of our finest deliveries. We design robust digital experiences tailored to elevate brands and engage users.</p>
+            <div class="portfolio-view-btn desktop-btn">
+                <a href="products.php" class="hero-cta news-btn">
+                    <span>View All Products</span>
+                    <span class="arrow">→</span>
+                </a>
+            </div>
         </div>
         
         <div class="portfolio-grid-mask">
@@ -155,6 +161,20 @@ $latestNews = $pdo->query("
                 <p>No projects available.</p>
             <?php endif; ?>
             </div>
+        </div>
+        <div class="portfolio-slider-ui">
+            <div class="portfolio-dots">
+                <span class="active"></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="portfolio-view-btn mobile-btn">
+            <a href="products.php" class="hero-cta news-btn">
+                <span>View All Products</span>
+                <span class="arrow">→</span>
+            </a>
         </div>
     </div>
 </section>
@@ -406,6 +426,31 @@ $latestNews = $pdo->query("
 
             });
 
+        }
+
+        const portfolioSlider = document.querySelector(".portfolio-grid-mask");
+        if(portfolioSlider){
+            const dots = document.querySelectorAll(".portfolio-dots span");
+            const hint = document.querySelector(".portfolio-slider-ui .swipe-hint");
+
+            portfolioSlider.addEventListener("scroll",()=>{
+                const index = Math.round(
+                    portfolioSlider.scrollLeft /
+                    portfolioSlider.offsetWidth
+                );
+
+                dots.forEach(dot=>dot.classList.remove("active"));
+
+                if(dots[index]){
+                    dots[index].classList.add("active");
+                }
+
+                if(portfolioSlider.scrollLeft>20){
+                    hint.style.opacity="0";
+                }else{
+                    hint.style.opacity="1";
+                }
+            });
         }
     });
 </script>
