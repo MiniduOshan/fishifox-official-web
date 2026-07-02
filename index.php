@@ -46,7 +46,7 @@ $latestNews = $pdo->query("
         <p class="hero-description">
             At FishiFox, we’re not just another IT company. We’re your dedicated partner in achieving digital excellence.
         </p>
-        <a href="#services" class="hero-cta">Explore Services</a>
+        <a href="services" class="hero-cta">Explore Services</a>
     </div>
     <div class="scroll-indicator"><div class="scroll-line"></div></div>
 </section>
@@ -69,6 +69,7 @@ $latestNews = $pdo->query("
         <?php endif; ?>
     </div>
 </section>
+
 
 <!-- Services Section -->
 <section class="services-section" id="services">
@@ -95,18 +96,24 @@ $latestNews = $pdo->query("
             <p>No services available.</p>
         <?php endif; ?>
     </div>
+    <div class="services-view-btn">
+        <a href="services" class="hero-cta">
+            View More Services
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
 </section>
 
 
 
 <!-- Vision & Mission Section -->
 <section class="about-section parallax-section" id="about" style="text-align: center;">
-    <div class="parallax-bg-image" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070');"></div>
+    <div class="parallax-bg-image" ></div>
     <div class="parallax-overlay"></div>
     <div class="parallax-content">
         <div class="section-header reveal">
             <p class="section-label" style="color: var(--primary-gold);">About Us</p>
-            <h2 class="section-title" style="color: white;">Vision & Mission</h2>
+            <h2 class="section-title" style="color: var(--primary-light);">Vision & Mission</h2>
         </div>
         <div class="reveal glass-panel" style="max-width: 800px; margin: 0 auto; padding: 3rem; border-radius: 24px;">
             <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--primary-light);">Our Vision</h3>
@@ -119,7 +126,6 @@ $latestNews = $pdo->query("
 </section>
 
 
-
 <!-- Portfolio Section -->
 <section class="portfolio-section" id="portfolio" style="padding-top: 100px; padding-bottom: 100px;">
     <div class="portfolio-layout-wrapper">
@@ -128,9 +134,9 @@ $latestNews = $pdo->query("
             <h2 class="section-title" style="margin-bottom: 20px; text-align: left;">Case Studies & Products</h2>
             <p class="section-desc" style="text-align: left; line-height: 1.6;">Explore some of our finest deliveries. We design robust digital experiences tailored to elevate brands and engage users.</p>
             <div class="portfolio-view-btn desktop-btn">
-                <a href="products.php" class="hero-cta news-btn">
+                <a href="products" class="hero-cta news-btn">
                     <span>View All Products</span>
-                    <span class="arrow">→</span>
+                    <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
         </div>
@@ -171,9 +177,9 @@ $latestNews = $pdo->query("
             </div>
         </div>
         <div class="portfolio-view-btn mobile-btn">
-            <a href="products.php" class="hero-cta news-btn">
+            <a href="products" class="hero-cta news-btn">
                 <span>View All Products</span>
-                <span class="arrow">→</span>
+                <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </div>
@@ -220,7 +226,7 @@ $latestNews = $pdo->query("
     </div>
 
     <div class="news-btn-wrapper">
-        <a href="news.php" class="hero-cta news-btn">
+        <a href="news" class="hero-cta news-btn">
             <span>View All News</span>
             <span class="arrow">
                 <i class="fas fa-arrow-right"></i>
@@ -271,37 +277,108 @@ $latestNews = $pdo->query("
 
 
 <!-- Contact Section -->
-<section class="contact-section" id="contact">
-    <div class="section-header reveal">
+<section class="contact-section" id="contact" style="padding-top:140px; padding-bottom:100px;">
+    <div class="section-header reveal" style="opacity:1; transform:none;">
         <p class="section-label">Get in Touch</p>
         <h2 class="section-title">Ready to Start Your Project?</h2>
+        <p class="section-desc">
+            We'd love to hear about your project. Send us a message and we'll respond as soon as possible.
+        </p>
     </div>
-    <div class="contact-container reveal">
-        <div class="contact-info-panel">
-            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin-bottom: 5px;">Contact Information</h3>
-            <p style="color: var(--text-secondary); font-size: 15px;">Feel free to reach out to us with any questions or project inquiries. We would love to hear from you!</p>
-            <div class="contact-details">
-                <div class="contact-detail-item">
-                    <div class="contact-detail-icon">📍</div>
-                    <div class="contact-detail-text">
-                        <h5>LOCATION</h5>
-                        <p><?= nl2br(htmlspecialchars($data['contact']['address'])) ?></p>
+
+    <div class="contact-wrapper">
+        <div class="contact-main-card">
+            <!-- Left -->
+            <div class="contact-info-panel">
+                <h3>Contact Information</h3>
+                <div class="contact-details">
+                    <div class="contact-detail-item">
+                        <div class="contact-detail-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-detail-text">
+                            <h5>Address</h5>
+                            <p>No.146/120D, Salmal Place,<br>Mattegoda, Kottawa, Sri Lanka</p>
+                        </div>
                     </div>
-                </div>
-                <div class="contact-detail-item">
-                    <div class="contact-detail-icon">📞</div>
-                    <div class="contact-detail-text">
-                        <h5>Phone</h5>
-                        <p><?= htmlspecialchars($data['contact']['tp']) ?></p>
+                    <div class="contact-detail-item">
+                        <div class="contact-detail-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-detail-text">
+                            <h5>Phone</h5>
+                            <p>+94 777 615 169</p>
+                        </div>
                     </div>
+                    <div class="contact-detail-item">
+                        <div class="contact-detail-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-detail-text">
+                            <h5>Email</h5>
+                            <p>info@fishifox.com</p>
+                        </div>
+                    </div> 
+                    <!-- Connect With Us -->
+                    <div class="contact-social">
+                        <h5>Connect With Us</h5>
+                        <div class="social-icons">
+                            <?php
+                            global $pdo;
+                            $socials = [
+                                'facebook'  => '#',
+                                'twitter'   => '#',
+                                'instagram' => '#',
+                                'linkedin'  => '#'
+                            ];
+                            if (isset($pdo)) {
+                                $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings WHERE setting_key LIKE 'social_%'");
+
+                                while ($row = $stmt->fetch()) {
+                                    $key = str_replace('social_', '', $row['setting_key']);
+
+                                    if (!empty($row['setting_value'])) {
+                                        $socials[$key] = $row['setting_value'];
+                                    }
+                                }
+                            }
+                            ?>
+                            <a href="<?= htmlspecialchars($socials['facebook']) ?>" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+                            <a href="<?= htmlspecialchars($socials['twitter']) ?>" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-brands fa-twitter"></i>
+                            </a>
+                            <a href="<?= htmlspecialchars($socials['instagram']) ?>" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                            <a href="<?= htmlspecialchars($socials['linkedin']) ?>" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>                 
                 </div>
-                <div class="contact-detail-item">
-                    <div class="contact-detail-icon">✉️</div>
-                    <div class="contact-detail-text">
-                        <h5>Email</h5>
-                        <p><a href="mailto:<?= htmlspecialchars($data['contact']['email']) ?>" style="color: inherit; text-decoration: none;"><?= htmlspecialchars($data['contact']['email']) ?></a></p>
+            </div>
+
+            <!-- Right -->
+            <div class="contact-form-panel">
+                <h3>Send Us a Message</h3>
+                <form action="contact-submit.php" method="POST">
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Full Name" required>
+
+                        <input type="email" name="email" placeholder="Email Address" required>
                     </div>
-                </div>
+                    <input type="text" name="subject" placeholder="Subject">
+                    <textarea
+                        name="message"
+                        rows="7"
+                        placeholder="Tell us about your project..."
+                        required></textarea>
+                    <button type="submit">
+                        Send Message
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -449,6 +526,24 @@ $latestNews = $pdo->query("
                     hint.style.opacity="0";
                 }else{
                     hint.style.opacity="1";
+                }
+            });
+        }
+
+        const getStartedBtn = document.getElementById("getStartedBtn");
+        if (getStartedBtn) {
+            getStartedBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const services = document.getElementById("services");
+
+                if (services) {
+                    const navHeight = document.querySelector(".nav").offsetHeight;
+
+                    window.scrollTo({
+                        top: services.offsetTop - navHeight - 20,
+                        behavior: "smooth"
+                    });
                 }
             });
         }
