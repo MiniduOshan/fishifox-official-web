@@ -637,15 +637,30 @@ section {
 }
 
 .service-icon {
-    width: 56px;
-    height: 56px;
-    background: var(--accent-gradient);
-    border-radius: 16px;
-    display: flex;
+    width: auto;
+    height: auto;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    color: white;
+    justify-content: flex-start;
     margin-bottom: 24px;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.service-icon i {
+    font-size: 54px;
+    line-height: 1;
+    background: linear-gradient(90deg, #e62e72 0%, #f76840 50%, #fcaa28 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    transition: .35s ease;
+}
+
+.service-card:hover .service-icon i {
+    transform: scale(1.12) rotate(-8deg);
 }
 
 .service-title,

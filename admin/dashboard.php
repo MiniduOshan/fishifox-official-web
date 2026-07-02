@@ -381,7 +381,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form method="post" enctype="multipart/form-data" id="service-form">
                         <input type="hidden" name="edit_service_index" id="edit_service_index" value="">
                         <div class="form-group">
-                            <label>Icon (Emoji or Text - Optional)</label>
+                            <label>Icon (Remix Icon Class - e.g. ri-code-line)</label>
                             <input type="text" name="service_icon" id="service_icon">
                         </div>
 

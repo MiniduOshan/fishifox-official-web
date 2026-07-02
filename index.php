@@ -85,7 +85,9 @@ $latestNews = $pdo->query("
                 <?php if(!empty($service['image'])): ?>
                     <img src="<?= htmlspecialchars($service['image']) ?>" alt="<?= htmlspecialchars($service['title']) ?>" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
                 <?php elseif(!empty($service['icon'])): ?>
-                    <div class="service-icon"><?= htmlspecialchars($service['icon']) ?></div>
+                    <div class="service-icon">
+                        <i class="<?= htmlspecialchars($service['icon']) ?>"></i>
+                    </div>
                 <?php endif; ?>
                 <h3 class="service-title"><?= htmlspecialchars($service['title']) ?></h3>
                 <p class="service-desc"><?= nl2br(htmlspecialchars($service['description'])) ?></p>
