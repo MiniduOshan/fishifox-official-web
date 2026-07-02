@@ -50,6 +50,12 @@ $data['footer_categories'] = $pdo->query("SELECT * FROM footer_categories")->fet
 $data['footer_links'] = $pdo->query("SELECT * FROM footer_links")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    function createSlug($string) {
+        $slug = preg_replace('/[^A-Za-z0-9\-]/', '-', $string);
+        $slug = preg_replace('/-+/', '-', $slug);
+        $slug = trim($slug, '-');
+        return strtolower($slug);
+    }
     // Sanitize all POST inputs
     array_walk_recursive($_POST, function(&$value) {
         $value = htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
@@ -127,6 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $image = $_POST['news_image'];
         $content = $_POST['news_content'];
         $is_headline = isset($_POST['news_is_headline']) ? 1 : 0;
+        
+        $slug = createSlug($title) . '-' . ($date ?: date('Y-m-d'));
 
         if (isset($_FILES['news_image_file']) && $_FILES['news_image_file']['error'] == 0) {
             $fileName = time() . '_' . basename($_FILES['news_image_file']['name']);
@@ -139,15 +147,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['edit_news_index']) && $_POST['edit_news_index'] !== '') {
             $id = $_POST['edit_news_index'];
             if (empty($image) && empty($_FILES['news_image_file']['name'])) {
-                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, content=?, is_headline=? WHERE id=?");
-                $stmt->execute([$date, $title, $content, $is_headline, $id]);
+                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, slug=?, content=?, is_headline=? WHERE id=?");
+                $stmt->execute([$date, $title, $slug, $content, $is_headline, $id]);
             } else {
-                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, image=?, content=?, is_headline=? WHERE id=?");
-                $stmt->execute([$date, $title, $image, $content, $is_headline, $id]);
+                $stmt = $pdo->prepare("UPDATE news SET date=?, title=?, slug=?, image=?, content=?, is_headline=? WHERE id=?");
+                $stmt->execute([$date, $title, $slug, $image, $content, $is_headline, $id]);
             }
         } else {
-            $stmt = $pdo->prepare("INSERT INTO news (date, title, image, content, is_headline) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$date, $title, $image, $content, $is_headline]);
+            $stmt = $pdo->prepare("INSERT INTO news (date, title, slug, image, content, is_headline) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$date, $title, $slug, $image, $content, $is_headline]);
         }
     } elseif (isset($_POST['delete_news'])) {
         $stmt = $pdo->prepare("DELETE FROM news WHERE id=?");

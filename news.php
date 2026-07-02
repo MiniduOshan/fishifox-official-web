@@ -16,7 +16,7 @@ $data['news'] = $pdo->query("SELECT * FROM news ORDER BY is_headline DESC, date 
     <div class="bbc-news-grid reveal" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
         <?php if(!empty($data['news'])): ?>
             <?php foreach($data['news'] as $index => $news): ?>
-            <a href="article?id=<?= $news['id'] ?>" class="bbc-news-card <?= $index === 0 ? 'bbc-featured-story' : '' ?>">
+            <a href="<?= $base_url ?>news/<?= htmlspecialchars($news['slug'] ?? $news['id']) ?>.html" class="bbc-news-card <?= $index === 0 ? 'bbc-featured-story' : '' ?>">
                 <?php if(!empty($news['image'])): ?>
                     <div class="bbc-img-wrapper">
                         <img src="<?= htmlspecialchars($news['image']) ?>" alt="<?= htmlspecialchars($news['title']) ?>" class="bbc-news-img">

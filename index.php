@@ -196,10 +196,10 @@ $latestNews = $pdo->query("
 
     <div class="news-preview-grid">
         <?php foreach ($latestNews as $news): ?>
-            <a href="article?id=<?= $news['id'] ?>" class="news-preview-card">
+            <a href="<?= $base_url ?>news/<?= htmlspecialchars($news['slug'] ?? $news['id']) ?>.html" class="news-preview-card">
 
                 <?php if (!empty($news['image'])): ?>
-                    <img src="<?= htmlspecialchars($news['image']) ?>"
+                    <img src="<?= strpos($news['image'], 'http') === 0 ? htmlspecialchars($news['image']) : $base_url . htmlspecialchars(ltrim($news['image'], '/')) ?>"
                          alt="<?= htmlspecialchars($news['title']) ?>">
                 <?php endif; ?>
 

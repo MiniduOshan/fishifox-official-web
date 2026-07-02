@@ -10,6 +10,9 @@ RewriteRule ^about-us/?$ /#about [L,R=301,NE]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)/$ /$1 [L,R=301]
 
+# News Slug Rewrite
+RewriteRule ^news/([a-zA-Z0-9\-]+)\.html$ article.php?slug=$1 [L,QSA]
+
 # Resolve .php file for extensionless urls
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f

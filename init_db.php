@@ -40,6 +40,7 @@ try {
         id INT AUTO_INCREMENT PRIMARY KEY,
         date DATE,
         title VARCHAR(255),
+        slug VARCHAR(255),
         image VARCHAR(255),
         content TEXT
     )");
