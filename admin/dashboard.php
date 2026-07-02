@@ -46,6 +46,8 @@ $data['news'] = $pdo->query("SELECT * FROM news")->fetchAll();
 $data['clients'] = $pdo->query("SELECT * FROM clients")->fetchAll();
 $data['stats'] = $pdo->query("SELECT * FROM stats")->fetchAll();
 $data['faq'] = $pdo->query("SELECT * FROM faqs")->fetchAll();
+$data['footer_categories'] = $pdo->query("SELECT * FROM footer_categories")->fetchAll();
+$data['footer_links'] = $pdo->query("SELECT * FROM footer_links")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize all POST inputs
@@ -190,6 +192,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['delete_stat'])) {
         $stmt = $pdo->prepare("DELETE FROM stats WHERE id=?");
         $stmt->execute([$_POST['delete_stat']]);
+    } elseif (isset($_POST['save_footer_category'])) {
+        $name = $_POST['footer_category_name'];
+        if (isset($_POST['edit_footer_category_index']) && $_POST['edit_footer_category_index'] !== '') {
+            $id = $_POST['edit_footer_category_index'];
+            $stmt = $pdo->prepare("UPDATE footer_categories SET name=? WHERE id=?");
+            $stmt->execute([$name, $id]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO footer_categories (name) VALUES (?)");
+            $stmt->execute([$name]);
+        }
+    } elseif (isset($_POST['delete_footer_category'])) {
+        $stmt = $pdo->prepare("DELETE FROM footer_categories WHERE id=?");
+        $stmt->execute([$_POST['delete_footer_category']]);
+    } elseif (isset($_POST['save_footer_link'])) {
+        $category_id = $_POST['footer_link_category_id'];
+        $name = $_POST['footer_link_name'];
+        $url = $_POST['footer_link_url'];
+        if (isset($_POST['edit_footer_link_index']) && $_POST['edit_footer_link_index'] !== '') {
+            $id = $_POST['edit_footer_link_index'];
+            $stmt = $pdo->prepare("UPDATE footer_links SET category_id=?, name=?, url=? WHERE id=?");
+            $stmt->execute([$category_id, $name, $url, $id]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO footer_links (category_id, name, url) VALUES (?, ?, ?)");
+            $stmt->execute([$category_id, $name, $url]);
+        }
+    } elseif (isset($_POST['delete_footer_link'])) {
+        $stmt = $pdo->prepare("DELETE FROM footer_links WHERE id=?");
+        $stmt->execute([$_POST['delete_footer_link']]);
     } elseif (isset($_POST['update_contact'])) {
         $address = $_POST['contact_address'];
         $tp = $_POST['contact_tp'];
@@ -273,6 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <li><a class="nav-link" data-target="contact-card">Contact</a></li>
             <li><a class="nav-link" data-target="socials-card">Socials</a></li>
             <li><a class="nav-link" data-target="faq-card">FAQ</a></li>
+            <li><a class="nav-link" data-target="footer-card">Footer</a></li>
         </ul>
     </div>
 
@@ -684,6 +715,110 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
+        <!-- Footer Management Section -->
+        <div class="admin-card" id="footer-card">
+            <h2>Footer Columns & Links</h2>
+            <div class="split-layout">
+                <!-- Categories (Columns) -->
+                <div class="form-section">
+                    <h3 id="footer-category-form-title" style="margin-top: 0;">Add New Category</h3>
+                    <form method="post" id="footer-category-form">
+                        <input type="hidden" name="edit_footer_category_index" id="edit_footer_category_index" value="">
+                        <div class="form-group">
+                            <label>Category Name (e.g. Quick Links)</label>
+                            <input type="text" name="footer_category_name" id="footer_category_name" required>
+                        </div>
+                        <button type="submit" name="save_footer_category" id="footer-category-submit-btn" class="btn">Add Category</button>
+                        <button type="button" id="footer-category-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
+                    </form>
+                    
+                    <h3 style="margin-top: 2rem;">Manage Categories</h3>
+                    <table>
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($data['footer_categories'] ?? [] as $cat): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($cat['name']) ?></td>
+                            <td>
+                                <button type="button" class="btn edit-footer-category-btn" 
+                                    data-index="<?= $cat['id'] ?>" 
+                                    data-name="<?= htmlspecialchars($cat['name']) ?>"
+                                    style="background-color: #f59e0b; margin-bottom:5px;">Edit</button>
+                                <form method="post" style="display:inline-block;" onsubmit="return confirm('Deleting a category deletes all its links. Proceed?');">
+                                    <input type="hidden" name="delete_footer_category" value="<?= $cat['id'] ?>">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+
+                <!-- Links -->
+                <div class="table-section">
+                    <h3 id="footer-link-form-title" style="margin-top: 0;">Add New Link</h3>
+                    <form method="post" id="footer-link-form" style="margin-bottom: 2rem;">
+                        <input type="hidden" name="edit_footer_link_index" id="edit_footer_link_index" value="">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="footer_link_category_id" id="footer_link_category_id" required style="width:100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <option value="">Select Category</option>
+                                <?php foreach ($data['footer_categories'] ?? [] as $cat): ?>
+                                    <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Link Label</label>
+                            <input type="text" name="footer_link_name" id="footer_link_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>URL</label>
+                            <input type="text" name="footer_link_url" id="footer_link_url" required>
+                        </div>
+                        <button type="submit" name="save_footer_link" id="footer-link-submit-btn" class="btn">Add Link</button>
+                        <button type="button" id="footer-link-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
+                    </form>
+
+                    <h3 style="margin-top: 2rem;">Manage Links</h3>
+                    <table>
+                        <tr>
+                            <th>Category</th>
+                            <th>Label</th>
+                            <th>URL</th>
+                            <th>Action</th>
+                        </tr>
+                        <?php foreach ($data['footer_links'] ?? [] as $link): 
+                            $catName = '';
+                            foreach($data['footer_categories'] as $c) {
+                                if($c['id'] == $link['category_id']) { $catName = $c['name']; break; }
+                            }
+                        ?>
+                        <tr>
+                            <td><?= htmlspecialchars($catName) ?></td>
+                            <td><?= htmlspecialchars($link['name']) ?></td>
+                            <td><?= htmlspecialchars($link['url']) ?></td>
+                            <td>
+                                <button type="button" class="btn edit-footer-link-btn" 
+                                    data-index="<?= $link['id'] ?>" 
+                                    data-cat="<?= $link['category_id'] ?>"
+                                    data-name="<?= htmlspecialchars($link['name']) ?>"
+                                    data-url="<?= htmlspecialchars($link['url']) ?>"
+                                    style="background-color: #f59e0b; margin-bottom:5px;">Edit</button>
+                                <form method="post" style="display:inline-block;" onsubmit="return confirm('Delete this link?');">
+                                    <input type="hidden" name="delete_footer_link" value="<?= $link['id'] ?>">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -862,6 +997,54 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('edit_faq_index').value = '';
             document.getElementById('faq-form-title').innerText = 'Add New FAQ';
             document.getElementById('faq-submit-btn').innerText = 'Add FAQ';
+            this.style.display = 'none';
+        });
+    }
+
+    // Footer Category Edit Logic
+    const editFCBtns = document.querySelectorAll('.edit-footer-category-btn');
+    const fcCancelBtn = document.getElementById('footer-category-cancel-btn');
+    if (fcCancelBtn) {
+        editFCBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('edit_footer_category_index').value = this.getAttribute('data-index');
+                document.getElementById('footer_category_name').value = this.getAttribute('data-name');
+                document.getElementById('footer-category-form-title').innerText = 'Edit Category';
+                document.getElementById('footer-category-submit-btn').innerText = 'Update Category';
+                fcCancelBtn.style.display = 'inline-block';
+                document.getElementById('footer_category_name').focus();
+            });
+        });
+        fcCancelBtn.addEventListener('click', function() {
+            document.getElementById('footer-category-form').reset();
+            document.getElementById('edit_footer_category_index').value = '';
+            document.getElementById('footer-category-form-title').innerText = 'Add New Category';
+            document.getElementById('footer-category-submit-btn').innerText = 'Add Category';
+            this.style.display = 'none';
+        });
+    }
+
+    // Footer Link Edit Logic
+    const editFLBtns = document.querySelectorAll('.edit-footer-link-btn');
+    const flCancelBtn = document.getElementById('footer-link-cancel-btn');
+    if (flCancelBtn) {
+        editFLBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('edit_footer_link_index').value = this.getAttribute('data-index');
+                document.getElementById('footer_link_category_id').value = this.getAttribute('data-cat');
+                document.getElementById('footer_link_name').value = this.getAttribute('data-name');
+                document.getElementById('footer_link_url').value = this.getAttribute('data-url');
+                document.getElementById('footer-link-form-title').innerText = 'Edit Link';
+                document.getElementById('footer-link-submit-btn').innerText = 'Update Link';
+                flCancelBtn.style.display = 'inline-block';
+                document.getElementById('footer_link_name').focus();
+            });
+        });
+        flCancelBtn.addEventListener('click', function() {
+            document.getElementById('footer-link-form').reset();
+            document.getElementById('edit_footer_link_index').value = '';
+            document.getElementById('footer-link-form-title').innerText = 'Add New Link';
+            document.getElementById('footer-link-submit-btn').innerText = 'Add Link';
             this.style.display = 'none';
         });
     }

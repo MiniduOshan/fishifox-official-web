@@ -62,6 +62,19 @@ try {
         label VARCHAR(255)
     )");
 
+    $pdo->exec("CREATE TABLE IF NOT EXISTS footer_categories (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255)
+    )");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS footer_links (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        category_id INT,
+        name VARCHAR(255),
+        url VARCHAR(255),
+        FOREIGN KEY (category_id) REFERENCES footer_categories(id) ON DELETE CASCADE
+    )");
+
     echo "Tables created successfully.\n";
 
     // Load data from JSON
@@ -78,6 +91,10 @@ try {
         $pdo->exec("TRUNCATE TABLE clients");
         $pdo->exec("TRUNCATE TABLE faqs");
         $pdo->exec("TRUNCATE TABLE stats");
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+        $pdo->exec("TRUNCATE TABLE footer_categories");
+        $pdo->exec("TRUNCATE TABLE footer_links");
+        $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // Insert Settings
         $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
