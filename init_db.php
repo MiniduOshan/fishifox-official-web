@@ -25,6 +25,7 @@ try {
         icon VARCHAR(255),
         image VARCHAR(255),
         title VARCHAR(255),
+        short_description TEXT,
         description TEXT
     )");
 
@@ -104,12 +105,13 @@ try {
         if (isset($data['contact']['address'])) $stmt->execute(['contact_address', $data['contact']['address']]);
 
         // Insert Services
-        $stmt = $pdo->prepare("INSERT INTO services (icon, title, description, image) VALUES (?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO services (icon, title, short_description, description, image) VALUES (?, ?, ?, ?, ?)");
         if (isset($data['services'])) {
             foreach ($data['services'] as $service) {
                 $stmt->execute([
                     $service['icon'] ?? '',
                     $service['title'] ?? '',
+                    $service['short_description'] ?? '',
                     $service['description'] ?? '',
                     $service['image'] ?? ''
                 ]);

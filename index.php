@@ -90,7 +90,7 @@ $latestNews = $pdo->query("
                     </div>
                 <?php endif; ?>
                 <h3 class="service-title"><?= htmlspecialchars($service['title']) ?></h3>
-                <p class="service-desc"><?= nl2br(htmlspecialchars($service['description'])) ?></p>
+                <p class="service-desc"><?= !empty($service['short_description']) ? $service['short_description'] : nl2br(htmlspecialchars($service['description'])) ?></p>
                 <a href="#contact" class="service-link">Get Quote →</a>
             </div>
             <?php endforeach; ?>

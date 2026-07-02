@@ -681,6 +681,36 @@ section {
     margin-bottom: 20px;
 }
 
+/* Short description (landing page preview) */
+.service-short-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+/* Long description (services page full detail) */
+.service-long-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    padding-top: 8px;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* Allow HTML formatting (bold/underline) from rich editor */
+.service-short-desc b, .service-short-desc strong,
+.service-long-desc b, .service-long-desc strong,
+.service-desc b, .service-desc strong {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.service-short-desc u, .service-long-desc u, .service-desc u {
+    text-decoration: underline;
+}
+
 .service-link {
     color: var(--primary-light);
     text-decoration: none;

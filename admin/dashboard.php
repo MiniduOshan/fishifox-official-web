@@ -56,7 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $slug = trim($slug, '-');
         return strtolower($slug);
     }
-    // Sanitize all POST inputs
+    // Save raw HTML from rich editor fields BEFORE global sanitization
+    // Only allow safe formatting tags (<b>, <strong>, <u>, <br>, <p>)
+    $allowedTags = '<b><strong><u><em><i><br><p><span>';
+    $rawServiceShortDesc = isset($_POST['service_short_desc']) ? strip_tags(trim($_POST['service_short_desc']), $allowedTags) : '';
+    $rawServiceDesc = isset($_POST['service_desc']) ? strip_tags(trim($_POST['service_desc']), $allowedTags) : '';
+
+    // Sanitize all POST inputs (will encode the rich fields too, but we already saved the raw values above)
     array_walk_recursive($_POST, function(&$value) {
         $value = htmlspecialchars(trim($value), ENT_QUOTES, 'UTF-8');
     });
@@ -69,7 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $icon = $_POST['service_icon'] ?? '';
         $image = $_POST['service_image'] ?? '';
         $title = $_POST['service_title'];
-        $desc = $_POST['service_desc'];
+        // Use the raw (HTML-preserved) versions for rich fields
+        $short_desc = $rawServiceShortDesc;
+        $desc = $rawServiceDesc;
 
         if (isset($_FILES['service_image_file']) && $_FILES['service_image_file']['error'] == 0) {
             $fileName = time() . '_' . basename($_FILES['service_image_file']['name']);
@@ -83,15 +91,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['edit_service_index'];
             if (empty($image) && empty($_FILES['service_image_file']['name'])) {
                 // Keep old image
-                $stmt = $pdo->prepare("UPDATE services SET icon=?, title=?, description=? WHERE id=?");
-                $stmt->execute([$icon, $title, $desc, $id]);
+                $stmt = $pdo->prepare("UPDATE services SET icon=?, title=?, short_description=?, description=? WHERE id=?");
+                $stmt->execute([$icon, $title, $short_desc, $desc, $id]);
             } else {
-                $stmt = $pdo->prepare("UPDATE services SET icon=?, image=?, title=?, description=? WHERE id=?");
-                $stmt->execute([$icon, $image, $title, $desc, $id]);
+                $stmt = $pdo->prepare("UPDATE services SET icon=?, image=?, title=?, short_description=?, description=? WHERE id=?");
+                $stmt->execute([$icon, $image, $title, $short_desc, $desc, $id]);
             }
         } else {
-            $stmt = $pdo->prepare("INSERT INTO services (icon, image, title, description) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$icon, $image, $title, $desc]);
+            $stmt = $pdo->prepare("INSERT INTO services (icon, image, title, short_description, description) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$icon, $image, $title, $short_desc, $desc]);
         }
     } elseif (isset($_POST['delete_service'])) {
         $stmt = $pdo->prepare("DELETE FROM services WHERE id=?");
@@ -291,6 +299,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
+<style>
+/* Rich Text Editor Toolbar */
+.rich-toolbar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+    padding: 6px 8px;
+    border: 1px solid #444;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+}
+.rich-toolbar button {
+    color: #000000ff;
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 3px 10px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1.4;
+    transition: background 0.15s;
+}
+.rich-toolbar button:hover {
+    background: #555;
+}
+.rich-editor {
+    min-height: 90px;
+    padding: 10px 12px;
+    border: 1px solid #444;
+    border-radius: 0 0 6px 6px;
+    color: #eee;
+    font-size: 14px;
+    line-height: 1.6;
+    outline: none;
+    word-break: break-word;
+    white-space: pre-wrap;
+    box-sizing: border-box;
+    width: 100%;
+    cursor: text;
+}
+.rich-editor:empty:before {
+    content: attr(placeholder);
+    color: #666;
+    pointer-events: none;
+    display: block;
+}
+.rich-editor:focus {
+    border-color: #B80000;
+    box-shadow: 0 0 0 2px rgba(184,0,0,0.2);
+}
+</style>
+
 <div class="admin-header">
     <h1>FishiFox Admin Dashboard</h1>
     <div>
@@ -397,10 +456,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label>Title</label>
                             <input type="text" name="service_title" id="service_title" required>
                         </div>
+
                         <div class="form-group">
-                            <label>Description</label>
-                            <textarea name="service_desc" id="service_desc" required></textarea>
+                            <label>Short Description <small style="color:#aaa;">(Displayed on landing page)</small></label>
+                            <div class="rich-toolbar" data-target="service_short_desc_editor">
+                                <button type="button" onclick="execRichCmd('service_short_desc_editor','bold')" title="Bold"><b>B</b></button>
+                                <button type="button" onclick="execRichCmd('service_short_desc_editor','underline')" title="Underline"><u>U</u></button>
+                            </div>
+                            <div class="rich-editor" id="service_short_desc_editor" contenteditable="true" data-field="service_short_desc" placeholder="Enter short description (shown on home page)..."></div>
+                            <textarea name="service_short_desc" id="service_short_desc" style="display:none;"></textarea>
                         </div>
+
+                        <div class="form-group">
+                            <label>Long Description <small style="color:#aaa;">(Displayed on services page)</small></label>
+                            <div class="rich-toolbar" data-target="service_desc_editor">
+                                <button type="button" onclick="execRichCmd('service_desc_editor','bold')" title="Bold"><b>B</b></button>
+                                <button type="button" onclick="execRichCmd('service_desc_editor','underline')" title="Underline"><u>U</u></button>
+                            </div>
+                            <div class="rich-editor" id="service_desc_editor" contenteditable="true" data-field="service_desc" placeholder="Enter full description (shown on services page)..."></div>
+                            <textarea name="service_desc" id="service_desc" style="display:none;"></textarea>
+                        </div>
+
                         <button type="submit" name="save_service" id="service-submit-btn" class="btn">Add Service</button>
                         <button type="button" id="service-cancel-btn" class="btn" style="display:none; background:#7f8c8d;">Cancel</button>
                     </form>
@@ -409,9 +485,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <table>
                         <tr>
                             <th>Icon</th>
-                            <th>Image URL</th>
+                            <th>Image</th>
                             <th>Title</th>
-                            <th>Description</th>
+                            <th>Short Desc</th>
+                            <th>Long Desc</th>
                             <th>Action</th>
                         </tr>
                         <?php foreach ($data['services'] ?? [] as $service): ?>
@@ -425,9 +502,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <?php endif; ?>
                             </td>
                             <td><?= htmlspecialchars($service['title'] ?? '') ?></td>
-                            <td><?= htmlspecialchars($service['description'] ?? '') ?></td>
+                            <td style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><?= htmlspecialchars(strip_tags($service['short_description'] ?? '')) ?></td>
+                            <td style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><?= htmlspecialchars(strip_tags($service['description'] ?? '')) ?></td>
                             <td>
-                                <button type="button" class="btn edit-service-btn" style="background:#f39c12; margin-bottom:5px;" data-index="<?= $service['id'] ?>" data-icon="<?= htmlspecialchars($service['icon'] ?? '') ?>" data-image="<?= htmlspecialchars($service['image'] ?? '') ?>" data-title="<?= htmlspecialchars($service['title'] ?? '') ?>" data-desc="<?= htmlspecialchars($service['description'] ?? '') ?>">Edit</button>
+                                <button type="button" class="btn edit-service-btn" style="background:#f39c12; margin-bottom:5px;"
+                                    data-index="<?= $service['id'] ?>"
+                                    data-icon="<?= htmlspecialchars($service['icon'] ?? '') ?>"
+                                    data-image="<?= htmlspecialchars($service['image'] ?? '') ?>"
+                                    data-title="<?= htmlspecialchars($service['title'] ?? '') ?>"
+                                    data-short-desc="<?= htmlspecialchars($service['short_description'] ?? '') ?>"
+                                    data-desc="<?= htmlspecialchars($service['description'] ?? '') ?>">Edit</button>
                                 <form method="post" style="display:inline;">
                                     <button type="submit" name="delete_service" value="<?= $service['id'] ?>" class="btn btn-danger">Delete</button>
                                 </form>
@@ -831,6 +915,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
+// Rich editor helper
+function execRichCmd(editorId, cmd) {
+    document.getElementById(editorId).focus();
+    document.execCommand(cmd, false, null);
+}
+
+// Sync rich editors to hidden textareas on any service form submit
+document.addEventListener('DOMContentLoaded', function() {
+    const serviceForm = document.getElementById('service-form');
+    if (serviceForm) {
+        serviceForm.addEventListener('submit', function() {
+            document.getElementById('service_short_desc').value = document.getElementById('service_short_desc_editor').innerHTML;
+            document.getElementById('service_desc').value = document.getElementById('service_desc_editor').innerHTML;
+        });
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelectorAll('.nav-link');
     const cards = document.querySelectorAll('.admin-card');
@@ -893,7 +994,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('edit_service_index').value = this.getAttribute('data-index');
                 document.getElementById('service_icon').value = this.getAttribute('data-icon');
                 document.getElementById('service_title').value = this.getAttribute('data-title');
-                document.getElementById('service_desc').value = this.getAttribute('data-desc');
+                // Populate rich editors
+                const shortDesc = this.getAttribute('data-short-desc') || '';
+                const longDesc = this.getAttribute('data-desc') || '';
+                document.getElementById('service_short_desc_editor').innerHTML = shortDesc;
+                document.getElementById('service_short_desc').value = shortDesc;
+                document.getElementById('service_desc_editor').innerHTML = longDesc;
+                document.getElementById('service_desc').value = longDesc;
                 document.getElementById('service-form-title').innerText = 'Edit Service';
                 document.getElementById('service-submit-btn').innerText = 'Update Service';
                 serviceCancelBtn.style.display = 'inline-block';
@@ -903,6 +1010,8 @@ document.addEventListener('DOMContentLoaded', function() {
         serviceCancelBtn.addEventListener('click', function() {
             document.getElementById('service-form').reset();
             document.getElementById('edit_service_index').value = '';
+            document.getElementById('service_short_desc_editor').innerHTML = '';
+            document.getElementById('service_desc_editor').innerHTML = '';
             document.getElementById('service-form-title').innerText = 'Add New Service';
             document.getElementById('service-submit-btn').innerText = 'Add Service';
             this.style.display = 'none';

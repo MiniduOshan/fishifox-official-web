@@ -31,7 +31,12 @@ $data['services'] = $pdo->query("SELECT * FROM services")->fetchAll();
                     </div>
                 <?php endif; ?>
                 <h3 class="service-title"><?= htmlspecialchars($service['title']) ?></h3>
-                <p class="service-desc"><?= nl2br(htmlspecialchars($service['description'])) ?></p>
+                <?php if(!empty($service['short_description'])): ?>
+                <p class="service-desc service-short-desc"><?= $service['short_description'] ?></p>
+                <?php endif; ?>
+                <?php if(!empty($service['description'])): ?>
+                <div class="service-desc service-long-desc"><?= $service['description'] ?></div>
+                <?php endif; ?>
                 <a href="/#contact" class="service-link">Get Quote →</a>
             </div>
             <?php endforeach; ?>
