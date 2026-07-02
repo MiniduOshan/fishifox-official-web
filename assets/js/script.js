@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const rotateY = ((rect.width / 2) - (e.clientX - rect.left)) / 15;
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
             });
-            card.addEventListener('mouseleave', () => { 
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)'; 
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
             });
         });
     } else {
@@ -59,4 +59,30 @@ document.addEventListener("DOMContentLoaded", () => {
             scrollProgress.style.width = `${percentage}%`;
         });
     }
+});
+
+// Mobile Navbar
+document.addEventListener("DOMContentLoaded", () => {
+
+    const mobileMenu = document.getElementById("mobile-menu");
+    const navLinks = document.getElementById("nav-links");
+
+    if (mobileMenu && navLinks) {
+
+        mobileMenu.addEventListener("click", () => {
+            mobileMenu.classList.toggle("active");
+            navLinks.classList.toggle("active");
+            document.body.classList.toggle("menu-open");
+        });
+
+        document.querySelectorAll("#nav-links a").forEach(link => {
+            link.addEventListener("click", () => {
+                mobileMenu.classList.remove("active");
+                navLinks.classList.remove("active");
+                document.body.classList.remove("menu-open");
+            });
+        });
+
+    }
+
 });

@@ -178,6 +178,138 @@ section {
     cursor: pointer;
 }
 
+/* Desktop CTA */
+.desktop-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-gradient);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Mobile CTA hidden on desktop */
+.mobile-cta {
+    display: none;
+}
+
+/* ==========================================================================
+   Mobile Menu (Hamburger) Styles
+   ========================================================================== */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+    z-index: 1001;
+    /* Keep it above the dropdown menu */
+}
+
+.menu-toggle .bar {
+    width: 25px;
+    height: 3px;
+    background-color: var(--text-primary, #333);
+    /* Fallback to dark color if variable is missing */
+    border-radius: 3px;
+    transition: all 0.3s ease-in-out;
+}
+
+.menu-toggle.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints for Navbar
+   ========================================================================== */
+@media (max-width:768px) {
+
+    .nav {
+        padding: 15px 20px;
+    }
+
+    .desktop-cta {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: flex;
+        z-index: 1101;
+    }
+
+    /* Full Screen Menu */
+    .nav-links {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 35px;
+
+        list-style: none;
+
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+
+        transition: all .35s ease;
+
+        z-index: 1100;
+    }
+
+    .nav-links.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .nav-links li {
+        width: auto;
+        padding: 0;
+    }
+
+    .nav-links a {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .mobile-cta {
+        display: block;
+        margin-top: 20px;
+    }
+
+    .mobile-cta .nav-cta {
+        display: inline-flex;
+        padding: 14px 34px;
+        font-size: 16px;
+        color: #fff;
+    }
+
+    /* Hide logo when menu opens (optional) */
+    .nav-links.active~.desktop-cta {
+        display: none;
+    }
+}
+
 /* ==========================================================================
    Content Layout Sections Framework
    ========================================================================== */
@@ -1834,13 +1966,6 @@ section {
 }
 
 @media (max-width: 768px) {
-    .nav {
-        padding: 16px 24px;
-    }
-
-    .nav-links {
-        display: none;
-    }
 
     .services-grid,
     .tools-grid,

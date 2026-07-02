@@ -391,13 +391,11 @@ $latestNews = $pdo->query("
         document.querySelectorAll('.hero-title .line').forEach((line) => {
 
             if (line.querySelector('.gradient-text')) {
-
                 gsap.from(line, {
                     opacity: 0,
                     y: 100,
                     duration: 0.8
                 });
-
                 return;
             }
 
@@ -408,7 +406,6 @@ $latestNews = $pdo->query("
                 const span = document.createElement("span");
                 span.className = "char";
                 span.innerHTML = char === " " ? "&nbsp;" : char;
-
                 line.appendChild(span);
 
                 gsap.fromTo(
@@ -422,8 +419,8 @@ $latestNews = $pdo->query("
                     }
                 );
             });
-
         });
+
         gsap.to('.hero-description', { opacity: 1, y: 0, duration: 0.7, delay: 0.38 });
         gsap.to('.hero-cta', { opacity: 1, y: 0, duration: 0.7, delay: 0.5 });
         gsap.to('.scroll-indicator', { opacity: 1, duration: 0.7, delay: 0.62 });
@@ -462,6 +459,7 @@ $latestNews = $pdo->query("
                 });
             });
         }
+
         document.querySelectorAll('.stat-number').forEach(stat => {
             const target = parseInt(stat.getAttribute('data-target'));
             ScrollTrigger.create({
@@ -477,18 +475,12 @@ $latestNews = $pdo->query("
 
         const slider = document.querySelector(".news-preview-grid");
         if (slider) {
-
             const dots = document.querySelectorAll(".news-dots span");
             const hint = document.querySelector(".swipe-hint");
 
             slider.addEventListener("scroll", () => {
-
-                const index = Math.round(
-                    slider.scrollLeft / slider.offsetWidth
-                );
-
+                const index = Math.round(slider.scrollLeft / slider.offsetWidth);
                 dots.forEach(dot => dot.classList.remove("active"));
-
                 if(dots[index]){
                     dots[index].classList.add("active");
                 }
@@ -500,9 +492,7 @@ $latestNews = $pdo->query("
                 }else{
                     hint.style.opacity = "1";
                 }
-
             });
-
         }
 
         const portfolioSlider = document.querySelector(".portfolio-grid-mask");
@@ -511,13 +501,8 @@ $latestNews = $pdo->query("
             const hint = document.querySelector(".portfolio-slider-ui .swipe-hint");
 
             portfolioSlider.addEventListener("scroll",()=>{
-                const index = Math.round(
-                    portfolioSlider.scrollLeft /
-                    portfolioSlider.offsetWidth
-                );
-
+                const index = Math.round(portfolioSlider.scrollLeft / portfolioSlider.offsetWidth);
                 dots.forEach(dot=>dot.classList.remove("active"));
-
                 if(dots[index]){
                     dots[index].classList.add("active");
                 }
@@ -534,12 +519,10 @@ $latestNews = $pdo->query("
         if (getStartedBtn) {
             getStartedBtn.addEventListener("click", function (e) {
                 e.preventDefault();
-
                 const services = document.getElementById("services");
 
                 if (services) {
                     const navHeight = document.querySelector(".nav").offsetHeight;
-
                     window.scrollTo({
                         top: services.offsetTop - navHeight - 20,
                         behavior: "smooth"
@@ -547,6 +530,15 @@ $latestNews = $pdo->query("
                 }
             });
         }
+
+        const menu = document.getElementById("mobile-menu");
+        const nav = document.getElementById("nav-links");
+
+        menu.addEventListener("click", () => {
+            menu.classList.toggle("active");
+            nav.classList.toggle("active");
+            document.body.classList.toggle("menu-open");
+        });
     });
 </script>
 
