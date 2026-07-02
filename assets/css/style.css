@@ -700,14 +700,19 @@ section {
 }
 
 /* Allow HTML formatting (bold/underline) from rich editor */
-.service-short-desc b, .service-short-desc strong,
-.service-long-desc b, .service-long-desc strong,
-.service-desc b, .service-desc strong {
+.service-short-desc b,
+.service-short-desc strong,
+.service-long-desc b,
+.service-long-desc strong,
+.service-desc b,
+.service-desc strong {
     font-weight: 700;
     color: var(--text-primary);
 }
 
-.service-short-desc u, .service-long-desc u, .service-desc u {
+.service-short-desc u,
+.service-long-desc u,
+.service-desc u {
     text-decoration: underline;
 }
 
@@ -895,23 +900,28 @@ section {
     max-width: 1200px;
     width: 100%;
     margin: 50px auto 0;
-
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
 }
 
 .news-preview-card {
-    background: #fff;
-    border-radius: 18px;
+    position: relative;
     overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
     display: flex;
     flex-direction: column;
-    transition: .35s ease;
     height: 100%;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, .45);
+    border-radius: 22px;
+    box-shadow:
+        0 15px 40px rgba(15, 23, 42, .08),
+        inset 0 1px 0 rgba(255, 255, 255, .55);
+    transition: all .35s ease;
 }
 
 .news-preview-card:hover {
@@ -1390,7 +1400,7 @@ section {
 
 /* Contact Module Layout */
 .contact-wrapper {
-    max-width: 1300px;
+    max-width: 1180px;
     margin: auto;
     padding: 0 20px;
 }
@@ -1402,22 +1412,16 @@ section {
     gap: 35px;
     align-items: stretch;
     padding: 35px;
-
     border-radius: 32px;
-
     background: linear-gradient(135deg,
             rgba(230, 46, 114, .10),
             rgba(247, 104, 64, .08),
             rgba(252, 170, 40, .08));
-
     border: 1px solid rgba(255, 255, 255, .65);
-
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-
     box-shadow:
         0 25px 70px rgba(0, 0, 0, .08);
-
     overflow: hidden;
 }
 
@@ -1425,34 +1429,26 @@ section {
 .contact-main-card::before {
     content: "";
     position: absolute;
-
     width: 320px;
     height: 320px;
-
     top: -120px;
     right: -120px;
-
     background: radial-gradient(circle,
             rgba(230, 46, 114, .20),
             transparent 70%);
-
     filter: blur(30px);
 }
 
 .contact-main-card::after {
     content: "";
     position: absolute;
-
     width: 280px;
     height: 280px;
-
     left: -100px;
     bottom: -100px;
-
     background: radial-gradient(circle,
             rgba(252, 170, 40, .18),
             transparent 70%);
-
     filter: blur(30px);
 }
 
@@ -1460,23 +1456,19 @@ section {
 .contact-info-panel {
     position: relative;
     z-index: 2;
-
     background: #fff;
-
     border-radius: 24px;
-
     padding: 40px;
     min-height: 100%;
     box-shadow: 0 15px 35px rgba(0, 0, 0, .05);
-
     display: flex;
     flex-direction: column;
 }
 
 .contact-info-panel h3,
 .contact-form-panel h3 {
-    font-size: 30px;
-    margin-bottom: 35px;
+    font-size: 24px;
+    margin-bottom: 24px;
     position: relative;
 }
 
@@ -1484,12 +1476,10 @@ section {
 .contact-form-panel h3::after {
     content: "";
     display: block;
-
     width: 70px;
     height: 4px;
     margin-top: 12px;
     border-radius: 50px;
-
     background: linear-gradient(90deg,
             #e62e72,
             #fcaa28);
@@ -1499,11 +1489,8 @@ section {
 .contact-form-panel {
     position: relative;
     z-index: 2;
-
     background: #fff;
-
     border-radius: 24px;
-
     padding: 40px;
     min-height: 100%;
     box-shadow: 0 15px 35px rgba(0, 0, 0, .05);
@@ -1522,11 +1509,9 @@ section {
     align-items: center;
     gap: 18px;
     padding: 22px;
-
     background: #fff;
     border: 1px solid rgba(0, 0, 0, .06);
     border-radius: 18px;
-
     transition: .35s;
 }
 
@@ -1541,12 +1526,10 @@ section {
     height: 56px;
     flex-shrink: 0;
     border-radius: 16px;
-
     background: linear-gradient(135deg,
             #e62e72,
             #f76840);
     color: #fff;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -2050,17 +2033,21 @@ section {
 }
 
 .bbc-news-card {
-    background-color: #ffffff;
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     text-decoration: none;
-    color: #222222;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid #e5e5e5;
-    border-radius: 0;
-    overflow: hidden;
-    position: relative;
-    z-index: 10;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, .45);
+    border-radius: 22px;
+    box-shadow:
+        0 12px 35px rgba(15, 23, 42, .08),
+        inset 0 1px 0 rgba(255, 255, 255, .55);
+    transition: all .35s ease;
 }
 
 .bbc-news-card:hover {

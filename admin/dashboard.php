@@ -328,7 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     padding: 10px 12px;
     border: 1px solid #444;
     border-radius: 0 0 6px 6px;
-    color: #eee;
+    color: #000000ff;
     font-size: 14px;
     line-height: 1.6;
     outline: none;
@@ -340,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 .rich-editor:empty:before {
     content: attr(placeholder);
-    color: #666;
+    color: #616161ff;
     pointer-events: none;
     display: block;
 }
@@ -462,6 +462,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="rich-toolbar" data-target="service_short_desc_editor">
                                 <button type="button" onclick="execRichCmd('service_short_desc_editor','bold')" title="Bold"><b>B</b></button>
                                 <button type="button" onclick="execRichCmd('service_short_desc_editor','underline')" title="Underline"><u>U</u></button>
+                                <button type="button" onclick="execRichCmd('service_short_desc_editor','italic')" title="Italic"><i>I</i></button>
                             </div>
                             <div class="rich-editor" id="service_short_desc_editor" contenteditable="true" data-field="service_short_desc" placeholder="Enter short description (shown on home page)..."></div>
                             <textarea name="service_short_desc" id="service_short_desc" style="display:none;"></textarea>
